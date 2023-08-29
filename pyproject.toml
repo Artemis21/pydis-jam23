@@ -1,0 +1,94 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pydis-jam23"
+version = "0.1.0"
+description = "The Readable Regexes' submission for the Python Discord 2023 Code Jam."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Artemis", email = "me@arty.li" },
+  # TODO: Add everyone else!
+]
+dependencies = [
+  "Pillow~=10.0.0",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.11"]
+
+[tool.hatch.envs.default]
+dependencies = [
+  "black~=23.7.0",
+  "ruff~=0.0.286",
+  "pre-commit~=3.3.3",
+]
+
+[tool.hatch.envs.default.scripts]
+hooks = "pre-commit install"
+lint = [
+  "ruff {args:.}",
+  "black --check --diff {args:.}",
+]
+fmt = [
+  "black {args:.}",
+  "ruff --fix {args:.}",
+  "lint",
+]
+main = "python -m src"
+
+[tool.black]
+target-version = ["py311"]
+line-length = 120
+skip-string-normalization = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+select = [
+  "A",
+  "ARG",
+  "B",
+  "C",
+  "DTZ",
+  "E",
+  "EM",
+  "F",
+  "FBT",
+  "I",
+  "ICN",
+  "ISC",
+  "N",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "Q",
+  "RUF",
+  "S",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+ignore = [
+  # Allow non-abstract empty methods in abstract base classes
+  "B027",
+  # Allow boolean positional values in function calls, like `dict.get(... True)`
+  "FBT003",
+  # Ignore checks for possible passwords
+  "S105", "S106", "S107",
+  # Ignore complexity
+  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+]
+unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
+
+[tool.ruff.isort]
+known-first-party = ["src"]
