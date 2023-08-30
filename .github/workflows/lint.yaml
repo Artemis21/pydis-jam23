@@ -19,7 +19,7 @@ jobs:
 
     env:
       # The Python version your project uses. Feel free to change this if required.
-      PYTHON_VERSION: "3.10"
+      PYTHON_VERSION: "3.11"
 
     steps:
       # Checks out the repository in the current folder.
@@ -31,6 +31,9 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Installing Hatch
+        run: pip install hatch
 
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.0
