@@ -12,6 +12,7 @@ license = "MIT"
 keywords = []
 authors = [
   { name = "Artemis", email = "me@arty.li" },
+  { name = "Pigeon", email = "pigeon43.stuff@gmail.com" },
   # TODO: Add everyone else!
 ]
 dependencies = [
