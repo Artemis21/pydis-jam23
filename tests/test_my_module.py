@@ -7,8 +7,6 @@ import pytest
         (3, 6, 9),
         (1, 2, 3),
         (17, 12, 29),
-        (17, 12, 28),
-
     ]
 )
 def test_add(a, b, out):
