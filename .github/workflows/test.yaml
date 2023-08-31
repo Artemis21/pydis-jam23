@@ -32,4 +32,4 @@ jobs:
 
     - name: Test with pytest + coverage
       run: |
-        hatch run coverage run -m pytest
+        python -m hatch run test
