@@ -12,3 +12,4 @@ Other commands you can run through hatch include:
 - `hatch run lint`: Run linting checks, which tell you when there are style issues in your code.
 - `hatch run fmt`: Run code formatting to automatically enforce style consistency.
 - `hatch run main`: Runs the project code itself.
+- `hatch run test`: Runs the tests in the `tests` directory.
