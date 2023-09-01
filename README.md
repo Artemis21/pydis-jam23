@@ -1,3 +1,7 @@
+[![Python tests](https://github.com/Artemis21/pydis-jam23/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/Artemis21/pydis-jam23/actions/workflows/test.yaml)
+
+[//]: # (# TODO: add the badge for `coverage`)
+
 # Readable Regexes
 
 Once we've worked out what our project is, this file should describe it. For now, here are some instructions on setting the project up.
