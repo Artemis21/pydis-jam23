@@ -44,7 +44,7 @@ fmt = [
   "ruff --fix {args:.}",
   "lint",
 ]
-main = "python -m src"
+main = "python -m src.pydis_jam23 {args:.}"
 test = "coverage run -m pytest"
 
 [tool.black]
