@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>809</width>
     <height>600</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_5">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -34,26 +34,84 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QLabel" name="image_viewer">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap>../../../Users/soloc/Downloads/peakpx.jpg</pixmap>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="main_container">
+      <item>
+       <layout class="QVBoxLayout" name="left_panel">
+        <item alignment="Qt::AlignHCenter">
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Steganography Tools</string>
+           </attribute>
+           <widget class="QPushButton" name="pushButton">
+            <property name="geometry">
+             <rect>
+              <x>50</x>
+              <y>0</y>
+              <width>75</width>
+              <height>23</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>LSB Tool</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="tab_2">
+           <attribute name="title">
+            <string>Tools</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="image_windo" stretch="0">
+        <item>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_2">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>614</width>
+             <height>573</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background: #303030;</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="image_viewer">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::AutoText</enum>
+              </property>
+              <property name="scaledContents">
+               <bool>false</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -62,7 +120,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>809</width>
      <height>21</height>
     </rect>
    </property>
@@ -79,7 +137,15 @@
     </property>
     <addaction name="actionDocs"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionImage_window"/>
+    <addaction name="actionTools_Panel"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="action_open_image">
@@ -95,6 +161,16 @@
   <action name="actionDocs">
    <property name="text">
     <string>Docs</string>
+   </property>
+  </action>
+  <action name="actionImage_window">
+   <property name="text">
+    <string>Image Window</string>
+   </property>
+  </action>
+  <action name="actionTools_Panel">
+   <property name="text">
+    <string>Tools Panel</string>
    </property>
   </action>
  </widget>
