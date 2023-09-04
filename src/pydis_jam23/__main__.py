@@ -4,11 +4,27 @@ import typing
 
 from PIL import Image
 
-from .codecs import CODECS, Codec
+from .codecs import CODECS, Codec, CodecError
 
 
 def main():
+    args = build_arg_parser().parse_args()
+    try:
+        if args.plain:
+            encode_message(args.plain, args.codec)
+        else:
+            decode_message(args.extract, args.codec)
+    except CodecError as e:
+        if args.verbose > 0:
+            raise
+        else:
+            print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
+    parser.add_argument("-v", "--verbose", action="count", default=0, help="increase output verbosity")
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument(
         "-p",
@@ -33,17 +49,13 @@ def main():
             dest="codec",
             help=codec.cli_help,
         )
-    args = parser.parse_args()
-    if args.plain:
-        encode_message(args.plain, args.codec)
-    else:
-        decode_message(args.extract, args.codec)
+    return parser
 
 
 def encode_message(plain: typing.BinaryIO, codec: Codec) -> None:
-    message = sys.stdin.read()
+    message = sys.stdin.buffer.read()
     image = Image.open(plain)
-    codec.encode(image, message.encode())
+    codec.encode(image, message)
     image.save(sys.stdout.buffer, format="PNG")
 
 

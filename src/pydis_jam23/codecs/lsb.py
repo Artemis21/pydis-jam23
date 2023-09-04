@@ -10,6 +10,8 @@ from collections.abc import Callable
 
 from PIL import Image
 
+from .common import CodecError
+
 cli_flag = "--lsb"
 cli_help = "use the least significant bit codec"
 
@@ -21,7 +23,7 @@ def encode(image: Image.Image, message: bytes) -> None:
     data = bytearray(image.tobytes())
     if len(message) * 8 > len(data):
         msg = "Message is too long to fit in image."
-        raise ValueError(msg)
+        raise CodecError(msg)
     for byte_idx, message_byte in enumerate(message):
         base_bit_idx = byte_idx * 8
         for bit_offset in range(8):
@@ -58,7 +60,7 @@ def read_bytes_from_image(image_data: bytes, offset: int, length: int) -> bytes:
     """
     if (offset + length * 8) > len(image_data):
         msg = "Image does not contain a message."
-        raise ValueError(msg)
+        raise CodecError(msg)
     message = bytearray()
     for bit_idx in range(offset, offset + length * 8):
         local_bit_idx = bit_idx & 0b111
