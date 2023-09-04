@@ -4,7 +4,7 @@ import typing
 
 from PIL import Image
 
-from pydis_jam23 import add_message_to_image, decode_message_from_image
+from .codecs import CODECS, Codec
 
 
 def main():
@@ -13,32 +13,43 @@ def main():
     action.add_argument(
         "-p",
         "--plain",
+        metavar="FILE",
         type=argparse.FileType("rb"),
-        help="A plain image to hide a message from stdin in, writes PNG to stdout",
+        help="a plain image to hide a message from stdin in, writes PNG to stdout",
     )
     action.add_argument(
         "-x",
         "--extract",
+        metavar="FILE",
         type=argparse.FileType("rb"),
-        help="Extract a message from an image to stdout",
+        help="extract a message from an image to stdout",
     )
+    codec_arg = parser.add_mutually_exclusive_group(required=True)
+    for codec in CODECS:
+        codec_arg.add_argument(
+            codec.cli_flag,
+            action="store_const",
+            const=codec,
+            dest="codec",
+            help=codec.cli_help,
+        )
     args = parser.parse_args()
     if args.plain:
-        encode_message(args.plain)
+        encode_message(args.plain, args.codec)
     else:
-        decode_message(args.extract)
+        decode_message(args.extract, args.codec)
 
 
-def encode_message(plain: typing.BinaryIO) -> None:
+def encode_message(plain: typing.BinaryIO, codec: Codec) -> None:
     message = sys.stdin.read()
     image = Image.open(plain)
-    add_message_to_image(image, message.encode())
+    codec.encode(image, message.encode())
     image.save(sys.stdout.buffer, format="PNG")
 
 
-def decode_message(extract: typing.BinaryIO) -> None:
+def decode_message(extract: typing.BinaryIO, codec: Codec) -> None:
     image = Image.open(extract)
-    message = decode_message_from_image(image)
+    message = codec.decode(image)
     sys.stdout.buffer.write(message)
 
 

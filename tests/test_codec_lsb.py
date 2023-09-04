@@ -2,7 +2,7 @@ import pathlib
 
 import pytest
 from PIL import Image
-from pydis_jam23 import add_message_to_image, decode_message_from_image
+from pydis_jam23.codecs import lsb
 
 RES_DIR = pathlib.Path(__file__).parent / "res"
 
@@ -21,5 +21,5 @@ def wikimedia_image() -> Image.Image:
     ],
 )
 def test_message_roundtrip(wikimedia_image: Image.Image, message: bytes) -> None:
-    add_message_to_image(wikimedia_image, message)
-    assert decode_message_from_image(wikimedia_image) == message
+    lsb.encode(wikimedia_image, message)
+    assert lsb.decode(wikimedia_image) == message
