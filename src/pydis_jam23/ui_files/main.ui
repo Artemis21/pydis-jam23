@@ -116,34 +116,112 @@ QPushButton::clicked
                <property name="bottomMargin">
                 <number>0</number>
                </property>
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Method:</string>
+                 </property>
+                </widget>
+               </item>
                <item alignment="Qt::AlignVCenter">
-                <widget class="QComboBox" name="comboBox">
+                <widget class="QComboBox" name="lsbaction">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
                  <item>
                   <property name="text">
-                   <string>Encode</string>
+                   <string>None</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>Decode</string>
+                   <string>Insert Data</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Retrieve Data</string>
                   </property>
                  </item>
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit"/>
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>Steganography Codec:</string>
+                 </property>
+                </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton">
-                 <property name="text">
-                  <string>Continue</string>
+                <widget class="QComboBox" name="lsbcodec">
+                 <item>
+                  <property name="text">
+                   <string>Common - LSB</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <widget class="QFrame" name="lsbinsertdata">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
                  </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QPlainTextEdit" name="lsbtext">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="readOnly">
+                     <bool>false</bool>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Insert text you want to embed.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item alignment="Qt::AlignHCenter">
+                   <widget class="QPushButton" name="lsbinsertbtn">
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                    <property name="text">
+                     <string>Insert Data</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item alignment="Qt::AlignHCenter">
+                   <widget class="QPushButton" name="lsbreceivebtn">
+                    <property name="text">
+                     <string>Recieve Data</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
               </layout>
@@ -172,7 +250,7 @@ QPushButton::clicked
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>622</width>
+             <width>537</width>
              <height>550</height>
             </rect>
            </property>
@@ -221,12 +299,15 @@ QPushButton::clicked
     </property>
     <addaction name="action_open_image"/>
     <addaction name="action_save_image"/>
+    <addaction name="action_exit_app"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
     </property>
     <addaction name="actionDocs"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout_Us"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -263,6 +344,16 @@ QPushButton::clicked
   <action name="actionTools_Panel">
    <property name="text">
     <string>Tools Panel</string>
+   </property>
+  </action>
+  <action name="actionAbout_Us">
+   <property name="text">
+    <string>About Us</string>
+   </property>
+  </action>
+  <action name="action_exit_app">
+   <property name="text">
+    <string>Exit</string>
    </property>
   </action>
  </widget>
