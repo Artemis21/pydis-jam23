@@ -1,7 +1,10 @@
+import typing
+
 from PIL import Image
 from PyQt5 import QtGui, QtWidgets, uic
 
-from .codecs import CODECS, decode_message, encode_message
+from . import codecs
+from .codecs import Codec, CodecError
 
 # from .codecs.common import CodecError
 
@@ -120,13 +123,17 @@ class AppFuncs:
     @staticmethod
     def lsbreceivedata(root):
         if root.image:
-            data = decode_message(root.image, CODECS[0], root.image)
             try:
+                data = decode_message(root.image, codecs.lsb)
                 root.lsbtext.setPlainText(data.decode())
                 root.statusBar.showMessage("Received data from image.")
             except UnicodeDecodeError as e:
-                msg = "Decoding Error"
+                msg = "Decoding Error (does not contain Unicode data)"
                 print(f"{msg}: {e}")
+                root.statusBar.showMessage(msg)
+            except CodecError as e:
+                msg = f"Codec Error: {e}"
+                print(msg)
                 root.statusBar.showMessage(msg)
         else:
             root.statusBar.showMessage("No image loaded")
@@ -134,14 +141,30 @@ class AppFuncs:
     @staticmethod
     def lsbinsertdata(root):
         if root.image:
-            data = encode_message(root.image, CODECS[0], root.lsbtext.toPlainText())
+            try:
+                data = encode_message(root.image, codecs.lsb, root.lsbtext.toPlainText())
+            except CodecError as e:
+                msg = f"Codec Error: {e}"
+                print(msg)
+                root.statusBar.showMessage(msg)
             root._image_tmp = data
             root.statusBar.showMessage("Data has been inserted.")
         else:
             root.statusBar.showMessage("No image loaded")
 
 
-def run_app():
+def encode_message(plain: typing.BinaryIO, codec: Codec, message: str) -> Image.Image:
+    image = Image.open(plain)
+    codec.encode(image, message.encode("utf-8"))
+    return image
+
+
+def decode_message(image_data: typing.BinaryIO, codec: Codec) -> bytes:
+    image = Image.open(image_data)
+    return codec.decode(image)
+
+
+def run():
     app = QtWidgets.QApplication([])
     UiApp()
     return app.exec_()
