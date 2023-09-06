@@ -2,14 +2,11 @@ import argparse
 import sys
 
 from .codecs import CODECS, CodecError, decode_message, encode_message
-
-# from . import
 from .ui_app import run_app
 
 
 def run_cli():
     args = build_arg_parser().parse_args()
-    # print( CODECS[0] )
     try:
         if args.plain:
             encode_message(args.plain, args.codec)

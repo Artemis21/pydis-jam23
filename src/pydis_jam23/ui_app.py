@@ -3,8 +3,6 @@ from PyQt5 import QtGui, QtWidgets, uic
 
 from .codecs import CODECS, decode_message, encode_message
 
-# from .codecs.common import CodecError
-
 
 class UiApp(QtWidgets.QMainWindow):
     def __init__(self):
@@ -42,14 +40,6 @@ class UiApp(QtWidgets.QMainWindow):
         self.lsbinsertbtn.clicked.connect(lambda: AppFuncs.lsbinsertdata(self))
         self.lsbreceivebtn.clicked.connect(lambda: AppFuncs.lsbreceivedata(self))
 
-    # def resizeEvent(self, event):
-    # ^ this is a problem for hatch formatting because this method is inherited from QMainWindow
-    #     # self.image_scaled = image.scaled(self.scroll.width(),self.scroll.height())
-    #     # self.pixmap = QPixmap.fromImage(self.image_scaled)
-    #     # self.imageLabel.setPixmap(self.pixmap)
-    #     QtWidgets.QMainWindow.resizeEvent(self, event)
-    #     print(event)
-
 
 class AppFuncs:
     @staticmethod
@@ -57,14 +47,7 @@ class AppFuncs:
         # this function opens a image in the gui app
         root.statusBar.showMessage("file dialog opened")
         filename = QtWidgets.QFileDialog.getOpenFileName()  # This is temporary
-        # print(filename)
         root.statusBar.showMessage(f"Image: {filename[0]}")
-        # dlg = QtWidgets.QFileDialog()
-        # dlg.setFileMode(QtWidgets.QFileDialog.AnyFile)
-        # dlg.setFilter("Text files (*.*)")
-        # filenames = QtCore.QStringListModel()
-        # print(filenames)
-        # image_viewer to display opened image
         if filename[0] != "":
             root.image_viewer.setPixmap(QtGui.QPixmap(filename[0]))
             root.statusBar.showMessage(f"Displaying: {filename[0]}")
@@ -74,10 +57,6 @@ class AppFuncs:
 
     @staticmethod
     def action_save_image(root):
-        # this function saves a image in the gui app
-        print("saving image")
-        # with open('newImage.jpg', 'wb') as imagefile:
-        #     imagefile.write(root._image_tmp)
         file_name, _ = QtWidgets.QFileDialog.getSaveFileName(root, "Save File", "", "All Files(*);;Text Files(*.png)")
         root._image_tmp.save(file_name, format="PNG")
         root.statusBar.showMessage("Image saved")
@@ -97,7 +76,6 @@ class AppFuncs:
 
     @staticmethod
     def lsbaction(root):
-        # print('lsb action')
         option = ["Insert Data", "Retrieve Data"]
         if root.lsbaction.currentText() == option[0]:
             print("Inserting data")
