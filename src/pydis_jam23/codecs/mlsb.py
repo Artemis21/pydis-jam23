@@ -14,7 +14,7 @@ from PIL import Image, ImageFilter, ImageEnhance, ImageDraw
 from random import randint
 from collections.abc import Sequence
 
-from common import CodecError, encode_varint, decode_varint
+from .common import CodecError, encode_varint, decode_varint
 
 cli_flag = "--mlsb"
 cli_help = "use the masked least significant bit codec"
