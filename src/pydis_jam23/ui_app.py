@@ -3,6 +3,8 @@ from PyQt5 import QtGui, QtWidgets, uic
 
 from .codecs import CODECS, decode_message, encode_message
 
+# from .codecs.common import CodecError
+
 
 class UiApp(QtWidgets.QMainWindow):
     def __init__(self):
