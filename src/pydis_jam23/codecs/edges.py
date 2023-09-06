@@ -16,8 +16,8 @@ from collections.abc import Sequence
 
 from .common import CodecError, encode_varint, decode_varint
 
-cli_flag = "--mlsb"
-cli_help = "use the masked least significant bit codec"
+cli_flag = "--edges"
+cli_help = "use the edges codec"
 
 def encode(image: Image.Image, message: bytes) -> None:
     """encode a message into an image using the above described method"""
