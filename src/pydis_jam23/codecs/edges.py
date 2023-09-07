@@ -10,11 +10,12 @@ Which channels is used is marked on the 0,0 pixel.
 Channel with a 1 as LSB is the mask
 """
 
-from PIL import Image, ImageFilter, ImageEnhance, ImageDraw
-from random import randint
 from collections.abc import Sequence
+from random import randint
 
-from .common import CodecError, encode_varint, decode_varint
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
+
+from .common import CodecError, decode_varint, encode_varint
 
 cli_flag = "--edges"
 cli_help = "use the edges codec"

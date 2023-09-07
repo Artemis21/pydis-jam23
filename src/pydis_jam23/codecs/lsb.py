@@ -10,7 +10,7 @@ from collections.abc import Callable
 
 from PIL import Image
 
-from .common import CodecError, encode_varint, decode_varint
+from .common import CodecError, decode_varint, encode_varint
 
 cli_flag = "--lsb"
 cli_help = "use the least significant bit codec"
