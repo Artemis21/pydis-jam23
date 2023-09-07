@@ -20,6 +20,7 @@ from .common import CodecError, decode_varint, encode_varint
 cli_flag = "--edges"
 cli_help = "use the edges codec"
 
+
 def encode(image: Image.Image, message: bytes) -> None:
     """encode a message into an image using the above described method"""
     image_data = bytearray(image.tobytes())
@@ -32,13 +33,13 @@ def encode(image: Image.Image, message: bytes) -> None:
     # try the other ones if not
     while True:
         edges = getEdges(image.split()[mask_color]).tobytes()
-        if countColor(edges,0) > len(data): # count edge pixels
+        if countColor(edges, 0) > len(data):  # count edge pixels
             break
         elif alternative_trys >= 2:
             msg = "The message is to long to be encoded into this image."
             raise CodecError(msg)
         alternative_trys += 1
-        mask_color = (mask_color + alternative_trys)% 3
+        mask_color = (mask_color + alternative_trys) % 3
 
     for idx in range(0, 3):  # set all LSB of the first image to 0
         image_data[idx] = setLSB(image_data[idx], 0)
@@ -47,7 +48,7 @@ def encode(image: Image.Image, message: bytes) -> None:
     image_data[mask_color] = setLSB(image_data[mask_color], 1)
 
     # get data spaces at index 1 -> as index 0 (pixel 0,0) marks the color layer used as mask
-    data_indices = generateDataIndeces(edges, mask_color, len(data)*8, 1)
+    data_indices = generateDataIndeces(edges, mask_color, len(data) * 8, 1)
 
     # split bytes to bits
     message_binary = []
@@ -56,18 +57,19 @@ def encode(image: Image.Image, message: bytes) -> None:
             message_binary.append((byte >> bit_idx) & 1)
 
     # modify the image
-    for bit_idx,pixel_idx in enumerate(data_indices):
-        image_data[pixel_idx] = setLSB(image_data[pixel_idx],message_binary[bit_idx])
+    for bit_idx, pixel_idx in enumerate(data_indices):
+        image_data[pixel_idx] = setLSB(image_data[pixel_idx], message_binary[bit_idx])
 
     image.frombytes(image_data)
+
 
 def decode(image: Image.Image) -> bytes:
     data = image.tobytes()
 
     # get the layer wich is used as the mask
     mask_color = None
-    for channel in range(0,3): #bytes 0-2 are have the RGB values of pixel 0,0
-        if bool(data[channel] % 2): # get the value of the LSB of the channel
+    for channel in range(0, 3):  # bytes 0-2 are have the RGB values of pixel 0,0
+        if bool(data[channel] % 2):  # get the value of the LSB of the channel
             if mask_color is None:
                 mask_color = channel
             else:
@@ -82,23 +84,26 @@ def decode(image: Image.Image) -> bytes:
     edges = getEdges(image.split()[mask_color]).tobytes()
 
     offset = 1
+
     def wrapperForNextByte() -> int:
         nonlocal offset
-        byte,new_offset = readNextByte(edges,data,mask_color,offset)
+        byte, new_offset = readNextByte(edges, data, mask_color, offset)
         offset = new_offset
         return byte[0]
+
     length = decode_varint(wrapperForNextByte)
 
     # finally load message
     message = b""
     for _ in range(length):
-        new_byte,new_offset = readNextByte(edges,data,mask_color,offset)
+        new_byte, new_offset = readNextByte(edges, data, mask_color, offset)
         offset = new_offset
         message += new_byte
 
     return message
 
-def countColor(image:bytes,color:int|tuple[int,int,int])->int:
+
+def countColor(image: bytes, color: int | tuple[int, int, int]) -> int:
     """Count the how many pixels have a color in an image"""
 
     count = 0
@@ -107,7 +112,8 @@ def countColor(image:bytes,color:int|tuple[int,int,int])->int:
             count += 1
     return count
 
-def readNextByte(edges:bytes,image_data:bytes,mask_color:int,pixel_index_offset:int) -> tuple[bytes, int]:
+
+def readNextByte(edges: bytes, image_data: bytes, mask_color: int, pixel_index_offset: int) -> tuple[bytes, int]:
     """Read the next byte of data out of an image while accounting for the edges mask
 
     :param edges: The raw byte data of the edges mask 0 -> Edge
@@ -123,17 +129,15 @@ def readNextByte(edges:bytes,image_data:bytes,mask_color:int,pixel_index_offset:
 
     # stop when 8 bit are found
     while len(output_byte) < 8:
-
         # skip when the pixels is no data pixel
         if edges[pixel_index] == 0:
-
             # convert pixel index to image index which is in RGB so 3 byte per pixel
             pixel_start = pixel_index * 3
 
             # read both channels that are not part of the mask
             if color_offset != mask_color:
                 # %2 is used to get the LSB
-                output_byte.append(image_data[pixel_start + color_offset]%2)
+                output_byte.append(image_data[pixel_start + color_offset] % 2)
             color_offset += 1
 
             # if done with the pixel move on the next
@@ -150,13 +154,15 @@ def readNextByte(edges:bytes,image_data:bytes,mask_color:int,pixel_index_offset:
             raise CodecError(msg)
 
     output = 0
-    for i,bit_value in enumerate(output_byte):
-        output += bit_value*(2**i)
+    for i, bit_value in enumerate(output_byte):
+        output += bit_value * (2**i)
 
-    return output.to_bytes(1,"big"), pixel_index
+    return output.to_bytes(1, "big"), pixel_index
+
 
 def setLSB(pixel: bytes, lsb_value: int) -> bytes:
     return (pixel & ~1) | lsb_value
+
 
 def generateDataIndeces(edges: bytes, mask_color: int, message_length: int, start_byte: int) -> list[int]:
     """Generate The indeces in the bytearray of the image where the data will
@@ -174,10 +180,8 @@ def generateDataIndeces(edges: bytes, mask_color: int, message_length: int, star
 
     # only create value until message_length is reached
     while len(data_indices) < message_length:
-
         # if the pixels is black in the mask, use it for data
         if edges[pixel_index] == 0:
-
             # tranfer between greayscale an rgb
             first_in_pixel = pixel_index * 3
 
@@ -196,8 +200,9 @@ def generateDataIndeces(edges: bytes, mask_color: int, message_length: int, star
 
     return data_indices
 
+
 def getEdges(image: Image.Image) -> Image.Image:
-    """ Find the Edges in an Image and mark them
+    """Find the Edges in an Image and mark them
     - black pixels mark edges"""
 
     # get the edges
@@ -215,8 +220,7 @@ def getEdges(image: Image.Image) -> Image.Image:
 
     # remove the outline that runs around the entire image
     drawer = ImageDraw.Draw(black_white)
-    drawer.rectangle(
-        [0, 0, image.width-1, image.height-1], fill=None, outline=1, width=1)
+    drawer.rectangle([0, 0, image.width - 1, image.height - 1], fill=None, outline=1, width=1)
 
     # make it greayscale again because its easyer to iterate over bytes then bits
     return black_white.convert("L")

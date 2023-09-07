@@ -1,7 +1,9 @@
 class CodecError(Exception):
     """An error encountered while trying to perform message encoding/decoding."""
 
+
 SEVEN_BIT_MAX = 127
+
 
 def encode_varint(value: int) -> bytes:
     """Encode an integer using a variable length encoding.
