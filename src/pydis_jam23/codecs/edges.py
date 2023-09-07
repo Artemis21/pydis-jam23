@@ -1,6 +1,6 @@
 """Encode a message into the given image.
 using as custom LSB variant
-    
+
 One of the color channels is randomly seclected.
 On this channel edge detection is run.
 The pixels that are detected as edges will then be used,
@@ -35,7 +35,8 @@ def encode(image: Image.Image, message: bytes) -> None:
         if countColor(edges,0) > len(data): # count edge pixels
             break
         elif alternative_trys >= 2:
-            raise CodecError("The message is to long to be encoded into this image.")
+            msg = "The message is to long to be encoded into this image."
+            raise CodecError(msg)
         alternative_trys += 1
         mask_color = (mask_color + alternative_trys)% 3
 
@@ -62,18 +63,20 @@ def encode(image: Image.Image, message: bytes) -> None:
 
 def decode(image: Image.Image) -> bytes:
     data = image.tobytes()
-    
+
     # get the layer wich is used as the mask
     mask_color = None
     for channel in range(0,3): #bytes 0-2 are have the RGB values of pixel 0,0
         if bool(data[channel] % 2): # get the value of the LSB of the channel
-            if mask_color == None:
+            if mask_color is None:
                 mask_color = channel
             else:
-                raise CodecError("Wrong codec, corrupted file or no encoded data.")
+                msg = "Wrong codec, corrupted file or no encoded data."
+                raise CodecError(msg)
 
-    if mask_color == None:
-        raise CodecError("Wrong codec, corrupted file or no encoded data.")
+    if mask_color is None:
+        msg = "Wrong codec, corrupted file or no encoded data."
+        raise CodecError(msg)
 
     # generate the mask that was used to encode the data
     edges = getEdges(image.split()[mask_color]).tobytes()
@@ -87,7 +90,7 @@ def decode(image: Image.Image) -> bytes:
     length = decode_varint(wrapperForNextByte)
 
     # finally load message
-    message = bytes()
+    message = b""
     for _ in range(length):
         new_byte,new_offset = readNextByte(edges,data,mask_color,offset)
         offset = new_offset
@@ -106,7 +109,7 @@ def countColor(image:bytes,color:int|tuple[int,int,int])->int:
 
 def readNextByte(edges:bytes,image_data:bytes,mask_color:int,pixel_index_offset:int) -> tuple[bytes, int]:
     """Read the next byte of data out of an image while accounting for the edges mask
-    
+
     :param edges: The raw byte data of the edges mask 0 -> Edge
     :param image_data: Raw data of the image 3 Bytes per pixel RGB
     :param mask_color: The index of wich channel is represented by edges 0-R 1-G 2-B
@@ -141,23 +144,24 @@ def readNextByte(edges:bytes,image_data:bytes,mask_color:int,pixel_index_offset:
         else:
             pixel_index += 1
 
-        # if we are looking at pixels outside the image no data was found 
+        # if we are looking at pixels outside the image no data was found
         if pixel_index > len(edges):
-            raise CodecError("Image contains no data or is corrupted.")
+            msg = "Image contains no data or is corrupted."
+            raise CodecError(msg)
 
     output = 0
     for i,bit_value in enumerate(output_byte):
         output += bit_value*(2**i)
-    
+
     return output.to_bytes(1,"big"), pixel_index
 
 def setLSB(pixel: bytes, lsb_value: int) -> bytes:
     return (pixel & ~1) | lsb_value
 
 def generateDataIndeces(edges: bytes, mask_color: int, message_length: int, start_byte: int) -> list[int]:
-    """Generate The indeces in the bytearray of the image where the data will 
+    """Generate The indeces in the bytearray of the image where the data will
     be located
-    
+
     :param edges: raw data of the edge mask 0-> Edge
     :param mask_color: The index of wich channel is represented by edges 0-R 1-G 2-B
     :param message_length: the amount of bits the data will contain
@@ -189,11 +193,11 @@ def generateDataIndeces(edges: bytes, mask_color: int, message_length: int, star
         else:
             # skip the pixels
             pixel_index += 1
-    
+
     return data_indices
 
 def getEdges(image: Image.Image) -> Image.Image:
-    """ Find the Edges in an Image and mark them 
+    """ Find the Edges in an Image and mark them
     - black pixels mark edges"""
 
     # get the edges
