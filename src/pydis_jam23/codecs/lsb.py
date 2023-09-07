@@ -6,7 +6,6 @@ data per pixel. Your message will be prefixed with its length, itself encoded
 using a variable length encoding to avoid a large section of zeros at the start
 of the message giving it away.
 """
-from collections.abc import Callable
 
 from PIL import Image
 
