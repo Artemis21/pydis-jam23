@@ -2,6 +2,7 @@ import pathlib
 
 import pytest
 from PIL import Image
+
 from pydis_jam23.codecs import CodecError, lsb
 
 RES_DIR = pathlib.Path(__file__).parent / "res"
