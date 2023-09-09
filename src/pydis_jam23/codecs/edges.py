@@ -24,7 +24,10 @@ def encode(image: Image.Image, message: bytes) -> None:
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
 
-    mask_color = randint(0, 2)  # noqa: S311 no need for crypto
+    num_channels = len(image.split())
+    num_data_channels = num_channels - 1
+
+    mask_color = randint(0, num_data_channels)  # noqa: S311 no need for crypto
     alternative_trys = 0
 
     # check if the channels is big enugh for the message
@@ -33,13 +36,13 @@ def encode(image: Image.Image, message: bytes) -> None:
         edges = get_edges(image.split()[mask_color]).tobytes()
         if count_color(edges, 0) > len(data):  # count edge pixels
             break
-        elif alternative_trys >= 2:
+        elif alternative_trys >= num_data_channels:
             msg = "The message is too long to be encoded into this image."
             raise CodecError(msg)
         alternative_trys += 1
         mask_color = (mask_color + alternative_trys) % 3
 
-    for idx in range(0, 3):  # set all LSB of the first pixel to 0
+    for idx in range(0, num_channels):  # set all LSB of the first pixel to 0
         image_data[idx] = set_lsb(image_data[idx], 0)
 
     # set the LSB of the color that is used as information mask to 1
@@ -64,9 +67,12 @@ def encode(image: Image.Image, message: bytes) -> None:
 def decode(image: Image.Image) -> bytes:
     data = image.tobytes()
 
+    num_channels = len(image.split())
+    num_channels - 1
+
     # get the layer wich is used as the mask
     mask_color = None
-    for channel in range(0, 3):  # bytes 0-2 are have the RGB values of pixel 0,0
+    for channel in range(0, num_channels):  # bytes 0-2 are have the RGB values of pixel 0,0
         if bool(data[channel] % 2):  # get the value of the LSB of the channel
             if mask_color is None:
                 mask_color = channel
