@@ -2,11 +2,8 @@ from typing import Any, Protocol, TypeVar
 
 from PIL import Image
 
-from . import lsb
+from . import edges, lsb
 from .common import CodecError, CodecParam
-
-EncodeArgs = TypeVar("EncodeArgs")
-DecodeArgs = TypeVar("DecodeArgs")
 
 
 class Codec(Protocol):
@@ -26,6 +23,6 @@ class Codec(Protocol):
         ...
 
 
-CODECS: list[Codec] = [lsb]
+CODECS: list[Codec] = [lsb, edges]
 
 __all__ = ["CodecError", "CODECS", "Codec"]

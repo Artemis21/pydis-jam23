@@ -1,15 +1,8 @@
-import pathlib
-
 import pytest
 from PIL import Image
 from pydis_jam23.codecs import CodecError, lsb
 
-RES_DIR = pathlib.Path(__file__).parent / "res"
-
-
-@pytest.fixture
-def wikimedia_image() -> Image.Image:
-    return Image.open(RES_DIR / "vista_de_cusco.webp")
+from .common import wikimedia_image  # noqa: F401 - import for fixtures
 
 
 @pytest.mark.parametrize(
