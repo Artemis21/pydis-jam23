@@ -200,8 +200,10 @@ def generate_data_indeces(edges: bytes, mask_color: int, message_length: int, st
 
 
 def get_edges(image: Image.Image) -> Image.Image:
-    """Find the Edges in an Image and mark them
-    - black pixels mark edges"""
+    """Find the edges in an Image and mark them.
+
+    Black pixels mark edges.
+    """
 
     # get the edges
     contours = image.filter(ImageFilter.CONTOUR)
