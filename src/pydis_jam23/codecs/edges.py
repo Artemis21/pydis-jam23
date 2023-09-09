@@ -139,7 +139,7 @@ def read_next_byte(edges: bytes, image_data: bytes, mask_color: int, pixel_index
     output_byte = []
 
     pixel_index = pixel_index_offset
-
+    color_offset = 0
     # stop when 8 bit are found
     while len(output_byte) < 8:
         # skip when the pixels is no data pixel
