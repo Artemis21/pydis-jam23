@@ -26,7 +26,7 @@ def encode(image: Image.Image, message: bytes) -> None:
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
 
-    if image.mode not in ALLOWED_MODES.keys:
+    if image.mode not in ALLOWED_MODES.keys():
         msg = f"Image is in a wrong color mode. ({image.mode}) use one of these instead: {ALLOWED_MODES}."
         raise CodecError(msg)
 
@@ -73,7 +73,7 @@ def encode(image: Image.Image, message: bytes) -> None:
 def decode(image: Image.Image) -> bytes:
     data = image.tobytes()
 
-    if image.mode not in ALLOWED_MODES.keys:
+    if image.mode not in ALLOWED_MODES.keys():
         msg = f"Image is in a wrong color mode. ({image.mode}) use one of these instead: {ALLOWED_MODES}."
         raise CodecError(msg)
 
