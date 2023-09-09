@@ -33,7 +33,7 @@ def encode(image: Image.Image, message: bytes) -> None:
     num_channels = ALLOWED_MODES[image.mode]
     num_data_channels = num_channels - 1
 
-    mask_color = randint(0, num_data_channels)  # noqa: S311 no need for crypto
+    mask_color = 2 # randint(0, num_data_channels)  # noqa: S311 no need for crypto
     alternative_trys = 0
 
     # check if the channels is big enugh for the message
@@ -46,7 +46,7 @@ def encode(image: Image.Image, message: bytes) -> None:
             msg = "The message is too long to be encoded into this image."
             raise CodecError(msg)
         alternative_trys += 1
-        mask_color = (mask_color + alternative_trys) % 3
+        mask_color = (mask_color + 1) % num_channels
 
     for idx in range(0, num_channels):  # set all LSB of the first pixel to 0
         image_data[idx] = set_lsb(image_data[idx], 0)
@@ -55,7 +55,7 @@ def encode(image: Image.Image, message: bytes) -> None:
     image_data[mask_color] = set_lsb(image_data[mask_color], 1)
 
     # get data spaces at index 1 -> as index 0 (pixel 0,0) marks the color layer used as mask
-    data_indices = generate_data_indeces(edges, mask_color, len(data) * 8, 1)
+    data_indices = generate_data_indeces(edges, mask_color, len(data) * 8, 1, num_channels)
 
     # split bytes to bits
     message_binary = []
@@ -78,11 +78,10 @@ def decode(image: Image.Image) -> bytes:
         raise CodecError(msg)
 
     num_channels = ALLOWED_MODES[image.mode]  # not best practise but we filter all non compatible codecs
-    num_channels - 1
 
     # get the layer wich is used as the mask
     mask_color = None
-    for channel in range(0, num_channels):  # bytes 0-2 are have the RGB values of pixel 0,0
+    for channel in range(num_channels):  # start bytes have the RGB values of pixel 0,0
         if bool(data[channel] % 2):  # get the value of the LSB of the channel
             if mask_color is None:
                 mask_color = channel
@@ -101,16 +100,17 @@ def decode(image: Image.Image) -> bytes:
 
     def wrapper_for_next_byte() -> int:
         nonlocal offset
-        byte, new_offset = read_next_byte(edges, data, mask_color, offset)
+        byte, new_offset = read_next_byte(edges, data, mask_color, offset, num_channels)
         offset = new_offset
         return byte[0]
 
     length = decode_varint(wrapper_for_next_byte)
+    print(offset)
 
     # finally load message
     message = b""
     for _ in range(length):
-        new_byte, new_offset = read_next_byte(edges, data, mask_color, offset)
+        new_byte, new_offset = read_next_byte(edges, data, mask_color, offset, num_channels)
         offset = new_offset
         message += new_byte
 
@@ -127,7 +127,7 @@ def count_color(image: bytes, color: int | tuple[int, int, int]) -> int:
     return count
 
 
-def read_next_byte(edges: bytes, image_data: bytes, mask_color: int, pixel_index_offset: int) -> tuple[bytes, int]:
+def read_next_byte(edges: bytes, image_data: bytes, mask_color: int, pixel_index_offset: int, channel_count: int) -> tuple[bytes, int]:
     """Read the next byte of data out of an image while accounting for the edges mask
 
     :param edges: The raw byte data of the edges mask 0 -> Edge
@@ -139,15 +139,13 @@ def read_next_byte(edges: bytes, image_data: bytes, mask_color: int, pixel_index
     output_byte = []
 
     pixel_index = pixel_index_offset
-    color_offset = 0
 
     # stop when 8 bit are found
     while len(output_byte) < 8:
         # skip when the pixels is no data pixel
         if edges[pixel_index] == 0:
             # convert pixel index to image index which is in RGB so 3 byte per pixel
-            pixel_start = pixel_index * 3
-
+            pixel_start = pixel_index * channel_count
             # read both channels that are not part of the mask
             if color_offset != mask_color:
                 # %2 is used to get the LSB
@@ -155,7 +153,7 @@ def read_next_byte(edges: bytes, image_data: bytes, mask_color: int, pixel_index
             color_offset += 1
 
             # if done with the pixel move on the next
-            if color_offset > 2:
+            if color_offset > channel_count - 1:
                 pixel_index += 1
                 color_offset = 0
 
@@ -178,7 +176,7 @@ def set_lsb(pixel: bytes, lsb_value: int) -> bytes:
     return (pixel & ~1) | lsb_value
 
 
-def generate_data_indeces(edges: bytes, mask_color: int, message_length: int, start_byte: int) -> list[int]:
+def generate_data_indeces(edges: bytes, mask_color: int, message_length: int, start_byte: int, channel_count: int) -> list[int]:
     """Generate The indeces in the bytearray of the image where the data will
     be located
 
@@ -197,21 +195,22 @@ def generate_data_indeces(edges: bytes, mask_color: int, message_length: int, st
         # if the pixels is black in the mask, use it for data
         if edges[pixel_index] == 0:
             # tranfer between greayscale an rgb
-            first_in_pixel = pixel_index * 3
+            first_in_pixel = pixel_index * channel_count
 
             # ensure that data is only saved on the non mask color layer
             if offset_index != mask_color:
                 data_indices.append(first_in_pixel + offset_index)
             offset_index += 1
 
-            # only go to next pixel if both channels have been filled
-            if offset_index > 2:
+            # only go to next pixel if channels have been filled
+            if offset_index > channel_count - 1:
                 pixel_index += 1
                 offset_index = 0
         else:
             # skip the pixels
             pixel_index += 1
 
+    print(data_indices)
     return data_indices
 
 
