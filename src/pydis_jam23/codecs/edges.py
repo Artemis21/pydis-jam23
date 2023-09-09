@@ -3,8 +3,8 @@ using as custom LSB variant
 
 One of the color channels is randomly seclected.
 On this channel edge detection is run.
-The pixels that are detected as edges will then be used,
-by to store data in the other two channels.
+The pixels that are detected as edges will then be used
+to store data in the other two channels.
 
 Which channels is used is marked on the 0,0 pixel.
 Channel with a 1 as LSB is the mask
