@@ -5,8 +5,6 @@ from PIL import Image
 from . import edges, lsb
 from .common import CodecError
 
-__all__ = ["CodecError", "CODECS", "Codec"]
-
 
 class Codec(Protocol):
     cli_flag: str
@@ -20,3 +18,5 @@ class Codec(Protocol):
 
 
 CODECS: list[Codec] = [lsb, edges]
+
+__all__ = ["CodecError", "CODECS", "Codec"]

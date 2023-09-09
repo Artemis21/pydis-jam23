@@ -19,6 +19,7 @@ authors = [
 ]
 dependencies = [
   "Pillow~=10.0.0",
+  "PyQt5~=5.15.9",
 ]
 
 [[tool.hatch.envs.all.matrix]]
@@ -44,7 +45,7 @@ fmt = [
   "ruff --fix {args:.}",
   "lint",
 ]
-main = "python -m src.pydis_jam23 {args:.}"
+main = "python -m src.pydis_jam23 {args}"
 test = "coverage run -m pytest"
 
 [tool.black]
