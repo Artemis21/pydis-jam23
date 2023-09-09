@@ -102,7 +102,8 @@ class AppFuncs:
     def lsbreceivedata(root):
         if root.image:
             try:
-                data = decode_message(root.image, codecs.lsb)
+                args = {"bits": 1, "msb": False}  # TODO: get args from ui
+                data = decode_message(root.image, codecs.lsb, args)
                 root.lsbtext.setPlainText(data.decode())
                 root.statusBar.showMessage("Received data from image.")
             except UnicodeDecodeError as e:
@@ -120,7 +121,8 @@ class AppFuncs:
     def lsbinsertdata(root):
         if root.image:
             try:
-                data = encode_message(root.image, codecs.lsb, root.lsbtext.toPlainText())
+                args = {"bits": 1, "msb": False}  # TODO: get args from ui
+                data = encode_message(root.image, codecs.lsb, root.lsbtext.toPlainText(), args)
             except CodecError as e:
                 msg = f"Codec Error: {e}"
                 print(msg)
@@ -131,15 +133,17 @@ class AppFuncs:
             root.statusBar.showMessage("No image loaded")
 
 
-def encode_message(plain: typing.BinaryIO, codec: Codec, message: str) -> Image.Image:
+def encode_message(
+    plain: typing.BinaryIO, codec: Codec, message: str, extra_args: dict[str, typing.Any]
+) -> Image.Image:
     image = Image.open(plain)
-    codec.encode(image, message.encode("utf-8"))
+    codec.encode(image, message.encode("utf-8"), **extra_args)
     return image
 
 
-def decode_message(image_data: typing.BinaryIO, codec: Codec) -> bytes:
+def decode_message(image_data: typing.BinaryIO, codec: Codec, extra_args: dict[str, typing.Any]) -> bytes:
     image = Image.open(image_data)
-    return codec.decode(image)
+    return codec.decode(image, **extra_args)
 
 
 def run():

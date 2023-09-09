@@ -4,16 +4,19 @@ import typing
 
 from PIL import Image
 
-from .codecs import CODECS, Codec, CodecError
+from .codecs import CODECS, Codec, CodecError, CodecParam
 
 
 def run():
     args = build_arg_parser().parse_args()
+    codec: Codec = args.codec
+    params = codec.params + (codec.encode_params if args.plain else codec.decode_params)
+    extra_args = find_args(args, codec, params)
     try:
         if args.plain:
-            encode_message(args.plain, args.codec)
+            encode_message(args.plain, codec, extra_args)
         else:
-            decode_message(args.extract, args.codec)
+            decode_message(args.extract, codec, extra_args)
     except CodecError as e:
         if args.verbose > 0:
             raise
@@ -50,17 +53,52 @@ def build_arg_parser() -> argparse.ArgumentParser:
             dest="codec",
             help=codec.cli_help,
         )
+        for param in codec.params:
+            add_codec_arg(parser, codec, param, when="codec")
+        for param in codec.encode_params:
+            add_codec_arg(parser, codec, param, when="encode")
+        for param in codec.decode_params:
+            add_codec_arg(parser, codec, param, when="decode")
     return parser
 
 
-def encode_message(plain: typing.BinaryIO, codec: Codec) -> None:
+def add_codec_arg(parser: argparse.ArgumentParser, codec: Codec, param: CodecParam, when: str) -> None:
+    settings: dict[str, typing.Any]
+    if issubclass(param.type_, bool):
+        settings = {"action": "store_true"}
+    elif issubclass(param.type_, int | str):
+        settings = {"metavar": param.cli_flag.upper(), "type": param.type_}
+    else:
+        msg = f"Unknown arg type {param.type_}"
+        raise TypeError(msg)
+    parser.add_argument(
+        f"{codec.cli_flag}-{param.cli_flag}",
+        help=f"[{codec.short_name} {when}] {param.cli_help}",
+        default=param.default,
+        dest=codec_arg_qualname(codec, param),
+        **settings,
+    )
+
+
+def find_args(all_args: argparse.Namespace, codec: Codec, params: list[CodecParam]) -> dict[str, typing.Any]:
+    args: dict[str, typing.Any] = {}
+    for param in params:
+        args[param.name] = getattr(all_args, codec_arg_qualname(codec, param))
+    return args
+
+
+def codec_arg_qualname(codec: Codec, param: CodecParam) -> str:
+    return f"codec-{codec.short_name}-{param.name}"
+
+
+def encode_message(plain: typing.BinaryIO, codec: Codec, extra_args: dict[str, typing.Any]) -> None:
     message = sys.stdin.buffer.read()
     image = Image.open(plain)
-    codec.encode(image, message)
+    codec.encode(image, message, **extra_args)
     image.save(sys.stdout.buffer, format="PNG")
 
 
-def decode_message(extract: typing.BinaryIO, codec: Codec) -> None:
+def decode_message(extract: typing.BinaryIO, codec: Codec, extra_args: dict[str, typing.Any]) -> None:
     image = Image.open(extract)
-    message = codec.decode(image)
+    message = codec.decode(image, **extra_args)
     sys.stdout.buffer.write(message)

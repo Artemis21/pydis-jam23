@@ -1,19 +1,28 @@
-from typing import Protocol
+from typing import Any, Protocol, TypeVar
 
 from PIL import Image
 
 from . import lsb
-from .common import CodecError
+from .common import CodecError, CodecParam
+
+EncodeArgs = TypeVar("EncodeArgs")
+DecodeArgs = TypeVar("DecodeArgs")
 
 
 class Codec(Protocol):
+    short_name: str
+
     cli_flag: str
     cli_help: str
 
-    def encode(self, image: Image.Image, message: bytes) -> None:
+    params: list[CodecParam]
+    encode_params: list[CodecParam]
+    decode_params: list[CodecParam]
+
+    def encode(self, image: Image.Image, message: bytes, **encode_args: Any) -> None:
         ...
 
-    def decode(self, image: Image.Image) -> bytes:
+    def decode(self, image: Image.Image, **decode_args: Any) -> bytes:
         ...
 
 

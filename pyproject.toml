@@ -26,6 +26,7 @@ dependencies = [
 python = ["3.11"]
 
 [tool.hatch.envs.default]
+python = "3.11"
 dependencies = [
   "black~=23.7.0",
   "ruff~=0.0.286",
@@ -91,6 +92,10 @@ ignore = [
   "S105", "S106", "S107",
   # Ignore complexity
   "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+  # Allow magic numbers
+  "PLR2004",
+  # Allow positional boolean args
+  "FBT001",
 ]
 unfixable = [
   # Don't touch unused imports
