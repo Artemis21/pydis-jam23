@@ -10,19 +10,29 @@ Which channels is used is marked on the 0,0 pixel.
 Channel with a 1 as LSB is the mask
 """
 from random import randint
+from typing import Any
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
 from .common import CodecError, decode_varint, encode_varint
 
+short_name = "edges"
 cli_flag = "--edges"
 cli_help = "use the edges codec"
+
+params = []
+encode_params = []
+decode_params = []
 
 ALLOWED_MODES = {"RGB": 3, "RGBA": 3, "CMYK": 4, "YCbCr": 4, "HSV": 3}
 
 
-def encode(image: Image.Image, message: bytes, *, test_channel: int | None = None) -> None:
+def encode(image: Image.Image, message: bytes, *, test_channel: int | None = None, **codec_args: Any) -> None:
     """encode a message into an image using the above described method"""
+    if codec_args:
+        msg = f"Unexpected codec arguments: {codec_args}"
+        raise TypeError(msg)
+
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
 
@@ -73,7 +83,10 @@ def encode(image: Image.Image, message: bytes, *, test_channel: int | None = Non
     image.frombytes(image_data)
 
 
-def decode(image: Image.Image) -> bytes:
+def decode(image: Image.Image, **codec_args: Any) -> bytes:
+    if codec_args:
+        msg = f"Unexpected codec arguments: {codec_args}"
+        raise TypeError(msg)
     data = image.tobytes()
 
     if image.mode not in ALLOWED_MODES.keys():

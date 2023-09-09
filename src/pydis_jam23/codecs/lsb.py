@@ -6,13 +6,12 @@ data per pixel. Your message will be prefixed with its length, itself encoded
 using a variable length encoding to avoid a large section of zeros at the start
 of the message giving it away.
 """
-from collections.abc import Callable, Iterator
+from collections.abc import Iterator
 from typing import Any
 
 from PIL import Image
 
 from .common import CodecError, CodecParam, decode_varint, encode_varint
-
 
 short_name = "lsb"
 cli_flag = "--lsb"

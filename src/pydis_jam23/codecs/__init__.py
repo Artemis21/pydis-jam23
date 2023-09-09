@@ -1,4 +1,4 @@
-from typing import Any, Protocol, TypeVar
+from typing import Any, Protocol
 
 from PIL import Image
 
