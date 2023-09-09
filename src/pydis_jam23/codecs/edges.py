@@ -34,7 +34,7 @@ def encode(image: Image.Image, message: bytes) -> None:
         if count_color(edges, 0) > len(data):  # count edge pixels
             break
         elif alternative_trys >= 2:
-            msg = "The message is to long to be encoded into this image."
+            msg = "The message is too long to be encoded into this image."
             raise CodecError(msg)
         alternative_trys += 1
         mask_color = (mask_color + alternative_trys) % 3
