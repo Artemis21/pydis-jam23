@@ -19,13 +19,19 @@ cli_flag = "--edges"
 cli_help = "use the edges codec"
 
 MAX_CHANNELS = 3
+ALLOWED_MODES = ["RGB", "RGBA", "CMYK", "YCbCr", "HSV"]
+
 
 def encode(image: Image.Image, message: bytes) -> None:
     """encode a message into an image using the above described method"""
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
 
-    num_channels = MAX_CHANNELS # not best practise but we filter all non compatible codecs
+    if image.mode not in ALLOWED_MODES:
+        msg = f"Image is in a wrong color mode. ({image.mode}) use one of these instead: {ALLOWED_MODES}."
+        raise CodecError(msg)
+
+    num_channels = MAX_CHANNELS  # not best practise but we filter all non compatible codecs
     num_data_channels = num_channels - 1
 
     mask_color = randint(0, num_data_channels)  # noqa: S311 no need for crypto
@@ -68,7 +74,11 @@ def encode(image: Image.Image, message: bytes) -> None:
 def decode(image: Image.Image) -> bytes:
     data = image.tobytes()
 
-    num_channels = num_channels = MAX_CHANNELS # not best practise but we filter all non compatible codecs
+    if image.mode not in ALLOWED_MODES:
+        msg = f"Image is in a wrong color mode. ({image.mode}) use one of these instead: {ALLOWED_MODES}."
+        raise CodecError(msg)
+
+    num_channels = num_channels = MAX_CHANNELS  # not best practise but we filter all non compatible codecs
     num_channels - 1
 
     # get the layer wich is used as the mask
