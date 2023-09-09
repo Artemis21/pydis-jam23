@@ -2,7 +2,7 @@ from typing import Protocol
 
 from PIL import Image
 
-from . import edges, lsb
+from . import edges, joke, lsb, lsbimage
 from .common import CodecError
 
 
@@ -17,6 +17,6 @@ class Codec(Protocol):
         ...
 
 
-CODECS: list[Codec] = [lsb, edges]
+CODECS: list[Codec] = [edges, joke, lsb, lsbimage]
 
 __all__ = ["CodecError", "CODECS", "Codec"]
