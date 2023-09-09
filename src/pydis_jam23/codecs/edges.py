@@ -9,8 +9,6 @@ by to store data in the other two channels.
 Which channels is used is marked on the 0,0 pixel.
 Channel with a 1 as LSB is the mask
 """
-
-from collections.abc import Sequence
 from random import randint
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
@@ -20,20 +18,21 @@ from .common import CodecError, decode_varint, encode_varint
 cli_flag = "--edges"
 cli_help = "use the edges codec"
 
-
+# ruff: noqa: PLR2004
 def encode(image: Image.Image, message: bytes) -> None:
     """encode a message into an image using the above described method"""
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
 
-    mask_color = randint(0, 2)  # idk just random cus more funs
+    mask_color = randint(0, 2)  # noqa S311
+    # idk just random cus more fun
     alternative_trys = 0
 
     # check if the channels is big enugh for the message
     # try the other ones if not
     while True:
-        edges = getEdges(image.split()[mask_color]).tobytes()
-        if countColor(edges, 0) > len(data):  # count edge pixels
+        edges = get_edges(image.split()[mask_color]).tobytes()
+        if count_color(edges, 0) > len(data):  # count edge pixels
             break
         elif alternative_trys >= 2:
             msg = "The message is to long to be encoded into this image."
@@ -42,13 +41,13 @@ def encode(image: Image.Image, message: bytes) -> None:
         mask_color = (mask_color + alternative_trys) % 3
 
     for idx in range(0, 3):  # set all LSB of the first image to 0
-        image_data[idx] = setLSB(image_data[idx], 0)
+        image_data[idx] = set_lsb(image_data[idx], 0)
 
     # set the LSB of the color that is used as information mask to 1
-    image_data[mask_color] = setLSB(image_data[mask_color], 1)
+    image_data[mask_color] = set_lsb(image_data[mask_color], 1)
 
     # get data spaces at index 1 -> as index 0 (pixel 0,0) marks the color layer used as mask
-    data_indices = generateDataIndeces(edges, mask_color, len(data) * 8, 1)
+    data_indices = generate_data_indeces(edges, mask_color, len(data) * 8, 1)
 
     # split bytes to bits
     message_binary = []
@@ -58,7 +57,7 @@ def encode(image: Image.Image, message: bytes) -> None:
 
     # modify the image
     for bit_idx, pixel_idx in enumerate(data_indices):
-        image_data[pixel_idx] = setLSB(image_data[pixel_idx], message_binary[bit_idx])
+        image_data[pixel_idx] = set_lsb(image_data[pixel_idx], message_binary[bit_idx])
 
     image.frombytes(image_data)
 
@@ -81,29 +80,29 @@ def decode(image: Image.Image) -> bytes:
         raise CodecError(msg)
 
     # generate the mask that was used to encode the data
-    edges = getEdges(image.split()[mask_color]).tobytes()
+    edges = get_edges(image.split()[mask_color]).tobytes()
 
     offset = 1
 
-    def wrapperForNextByte() -> int:
+    def wrapper_for_next_byte() -> int:
         nonlocal offset
-        byte, new_offset = readNextByte(edges, data, mask_color, offset)
+        byte, new_offset = read_next_byte(edges, data, mask_color, offset)
         offset = new_offset
         return byte[0]
 
-    length = decode_varint(wrapperForNextByte)
+    length = decode_varint(wrapper_for_next_byte)
 
     # finally load message
     message = b""
     for _ in range(length):
-        new_byte, new_offset = readNextByte(edges, data, mask_color, offset)
+        new_byte, new_offset = read_next_byte(edges, data, mask_color, offset)
         offset = new_offset
         message += new_byte
 
     return message
 
 
-def countColor(image: bytes, color: int | tuple[int, int, int]) -> int:
+def count_color(image: bytes, color: int | tuple[int, int, int]) -> int:
     """Count the how many pixels have a color in an image"""
 
     count = 0
@@ -113,7 +112,7 @@ def countColor(image: bytes, color: int | tuple[int, int, int]) -> int:
     return count
 
 
-def readNextByte(edges: bytes, image_data: bytes, mask_color: int, pixel_index_offset: int) -> tuple[bytes, int]:
+def read_next_byte(edges: bytes, image_data: bytes, mask_color: int, pixel_index_offset: int) -> tuple[bytes, int]:
     """Read the next byte of data out of an image while accounting for the edges mask
 
     :param edges: The raw byte data of the edges mask 0 -> Edge
@@ -160,11 +159,11 @@ def readNextByte(edges: bytes, image_data: bytes, mask_color: int, pixel_index_o
     return output.to_bytes(1, "big"), pixel_index
 
 
-def setLSB(pixel: bytes, lsb_value: int) -> bytes:
+def set_lsb(pixel: bytes, lsb_value: int) -> bytes:
     return (pixel & ~1) | lsb_value
 
 
-def generateDataIndeces(edges: bytes, mask_color: int, message_length: int, start_byte: int) -> list[int]:
+def generate_data_indeces(edges: bytes, mask_color: int, message_length: int, start_byte: int) -> list[int]:
     """Generate The indeces in the bytearray of the image where the data will
     be located
 
@@ -201,7 +200,7 @@ def generateDataIndeces(edges: bytes, mask_color: int, message_length: int, star
     return data_indices
 
 
-def getEdges(image: Image.Image) -> Image.Image:
+def get_edges(image: Image.Image) -> Image.Image:
     """Find the Edges in an Image and mark them
     - black pixels mark edges"""
 
