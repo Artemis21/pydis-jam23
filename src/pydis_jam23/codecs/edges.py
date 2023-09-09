@@ -18,7 +18,7 @@ from .common import CodecError, decode_varint, encode_varint
 cli_flag = "--edges"
 cli_help = "use the edges codec"
 
-# ruff: noqa: PLR2004
+
 def encode(image: Image.Image, message: bytes) -> None:
     """encode a message into an image using the above described method"""
     image_data = bytearray(image.tobytes())
