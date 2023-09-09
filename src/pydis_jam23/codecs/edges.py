@@ -24,8 +24,7 @@ def encode(image: Image.Image, message: bytes) -> None:
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
 
-    mask_color = randint(0, 2)  # noqa S311
-    # idk just random cus more fun
+    mask_color = randint(0, 2)  # noqa: S311 no need for cryto
     alternative_trys = 0
 
     # check if the channels is big enugh for the message
