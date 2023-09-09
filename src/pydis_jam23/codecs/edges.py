@@ -21,7 +21,7 @@ cli_help = "use the edges codec"
 ALLOWED_MODES = {"RGB": 3, "RGBA": 3, "CMYK": 4, "YCbCr": 4, "HSV": 3}
 
 
-def encode(image: Image.Image, message: bytes) -> None:
+def encode(image: Image.Image, message: bytes, *, test_channel: int | None = None) -> None:
     """encode a message into an image using the above described method"""
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
@@ -33,7 +33,10 @@ def encode(image: Image.Image, message: bytes) -> None:
     num_channels = ALLOWED_MODES[image.mode]
     num_data_channels = num_channels - 1
 
-    mask_color = 2 # randint(0, num_data_channels)  # noqa: S311 no need for crypto
+    if test_channel is None:
+        mask_color = randint(0, num_data_channels)  # noqa: S311 no need for crypto
+    else:
+        mask_color = test_channel
     alternative_trys = 0
 
     # check if the channels is big enugh for the message
@@ -105,7 +108,6 @@ def decode(image: Image.Image) -> bytes:
         return byte[0]
 
     length = decode_varint(wrapper_for_next_byte)
-    print(offset)
 
     # finally load message
     message = b""
@@ -127,7 +129,9 @@ def count_color(image: bytes, color: int | tuple[int, int, int]) -> int:
     return count
 
 
-def read_next_byte(edges: bytes, image_data: bytes, mask_color: int, pixel_index_offset: int, channel_count: int) -> tuple[bytes, int]:
+def read_next_byte(
+    edges: bytes, image_data: bytes, mask_color: int, pixel_index_offset: int, channel_count: int
+) -> tuple[bytes, int]:
     """Read the next byte of data out of an image while accounting for the edges mask
 
     :param edges: The raw byte data of the edges mask 0 -> Edge
@@ -169,6 +173,9 @@ def read_next_byte(edges: bytes, image_data: bytes, mask_color: int, pixel_index
     for i, bit_value in enumerate(output_byte):
         output += bit_value * (2**i)
 
+    if color_offset == 2:
+        pixel_index += 1
+
     return output.to_bytes(1, "big"), pixel_index
 
 
@@ -176,7 +183,9 @@ def set_lsb(pixel: bytes, lsb_value: int) -> bytes:
     return (pixel & ~1) | lsb_value
 
 
-def generate_data_indeces(edges: bytes, mask_color: int, message_length: int, start_byte: int, channel_count: int) -> list[int]:
+def generate_data_indeces(
+    edges: bytes, mask_color: int, message_length: int, start_byte: int, channel_count: int
+) -> list[int]:
     """Generate The indeces in the bytearray of the image where the data will
     be located
 
@@ -210,7 +219,6 @@ def generate_data_indeces(edges: bytes, mask_color: int, message_length: int, st
             # skip the pixels
             pixel_index += 1
 
-    print(data_indices)
     return data_indices
 
 
