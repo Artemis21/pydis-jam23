@@ -39,7 +39,7 @@ def encode(image: Image.Image, message: bytes) -> None:
         alternative_trys += 1
         mask_color = (mask_color + alternative_trys) % 3
 
-    for idx in range(0, 3):  # set all LSB of the first image to 0
+    for idx in range(0, 3):  # set all LSB of the first pixel to 0
         image_data[idx] = set_lsb(image_data[idx], 0)
 
     # set the LSB of the color that is used as information mask to 1
