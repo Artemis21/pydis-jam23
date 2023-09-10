@@ -35,7 +35,9 @@
           {% else %}
             type="text"
             value="{{ param.default }}"
-          {% endif %} />
+          {% endif %}
+          {% if param.required %}required{%endif%}
+          />
       </div>
     {% endfor %}
     {% if encode %}
