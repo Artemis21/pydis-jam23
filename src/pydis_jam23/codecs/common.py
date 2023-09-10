@@ -10,7 +10,8 @@ class CodecError(Exception):
 class CodecParam:
     name: str
     type_: type[bool] | type[int] | type[str]
-    default: bool | int | str
+    default: bool | int | str | None
+    required: bool
 
     display_name: str
     help_: str
