@@ -31,10 +31,10 @@
             {% if param.default %}checked{% endif %}
           {% elif issubclass(param.type_, int) %}
             type="number"
-            value="{{ param.default }}"
+            value="{{ param.default if param.default }}"
           {% else %}
             type="text"
-            value="{{ param.default }}"
+            value="{{ param.default if param.default }}"
           {% endif %}
           {% if param.required %}required{%endif%}
           />
