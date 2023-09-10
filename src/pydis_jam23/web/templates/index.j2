@@ -1,0 +1,10 @@
+{% extends "base.j2" %}
+
+{% block toolbar %}
+  <div class="description">Pick a codec:</div>
+  <div class="toolbar__buttons">
+    {% for codec in codecs %}
+      <a href="/codec/{{ codec.short_name }}" class="button">{{ codec.display_name }}</a>
+    {% endfor %}
+  </div>
+{% endblock %}

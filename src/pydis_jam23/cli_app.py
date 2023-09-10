@@ -73,7 +73,7 @@ def add_codec_arg(parser: argparse.ArgumentParser, codec: Codec, param: CodecPar
         raise TypeError(msg)
     parser.add_argument(
         f"{codec.cli_flag}-{param.cli_flag}",
-        help=f"[{codec.short_name} {when}] {param.cli_help}",
+        help=f"[{codec.short_name} {when}] {param.help_}",
         default=param.default,
         dest=codec_arg_qualname(codec, param),
         **settings,
@@ -83,7 +83,12 @@ def add_codec_arg(parser: argparse.ArgumentParser, codec: Codec, param: CodecPar
 def find_args(all_args: argparse.Namespace, codec: Codec, params: list[CodecParam]) -> dict[str, typing.Any]:
     args: dict[str, typing.Any] = {}
     for param in params:
-        args[param.name] = getattr(all_args, codec_arg_qualname(codec, param))
+        arg = getattr(all_args, codec_arg_qualname(codec, param))
+        if arg in (None, "") and param.required:
+            msg = f"{codec.display_name} codec requires {codec.cli_flag}-{param.cli_flag} to be given."
+            print(msg, file=sys.stderr)
+            sys.exit(1)
+        args[param.name] = arg
     return args
 
 

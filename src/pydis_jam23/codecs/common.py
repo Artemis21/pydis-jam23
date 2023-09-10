@@ -10,10 +10,12 @@ class CodecError(Exception):
 class CodecParam:
     name: str
     type_: type[bool] | type[int] | type[str]
-    default: bool | int | str
+    default: bool | int | str | None
+    required: bool
 
+    display_name: str
+    help_: str
     cli_flag: str
-    cli_help: str
 
 
 SEVEN_BIT_MAX = 127

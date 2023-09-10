@@ -1,0 +1,68 @@
+{% extends "base.j2" %}
+
+{% block breadcrumbs %}
+  <a class="breadcrumbs__crumb" href="/codec/{{ codec.short_name}}">{{ codec.display_name }}</a>
+  <span class="breadcrumbs__sep">/</span>
+  <span class="breadcrumbs__end">
+    {% if encode %}
+      Encode
+    {% else %}
+      Decode
+    {% endif %}
+  </span>
+{% endblock %}
+
+{% block toolbar %}
+  <form class="toolbar__form" method="post">
+    {% if encode %}
+      {% set params = codec.params + codec.encode_params %}
+    {% else %}
+      {% set params = codec.params + codec.decode_params %}
+    {% endif %}
+    {% for param in params %}
+      <div class="param" title="{{ param.help_ }}">
+        <label class="param__label" for="param-{{ param.name }}">{{ param.display_name }}</label>
+        <input
+          class="param__input"
+          name="{{ param.name }}"
+          id="param-{{ param.name }}"
+          {% if issubclass(param.type_, bool) %}
+            type="checkbox"
+            {% if param.default %}checked{% endif %}
+          {% elif issubclass(param.type_, int) %}
+            type="number"
+            value="{{ param.default }}"
+          {% else %}
+            type="text"
+            value="{{ param.default }}"
+          {% endif %}
+          {% if param.required %}required{%endif%}
+          />
+      </div>
+    {% endfor %}
+    {% if encode %}
+      <div class="description">Enter a message to encode:</div>
+      <textarea class="text_entry" placeholder="Once upon a time..." name="message" required></textarea>
+    {% endif %}
+    <input
+      type="submit"
+      {% if encode %}
+        value="Encode!"
+      {% else %}
+        value="Decode!"
+      {% endif %}
+      {% if current_image %}
+        class="button"
+      {% else %}
+        class="button button--disabled"
+        title="Open an image first"
+        disabled
+      {% endif %}
+    >
+  </form>
+  {% if not encode %}
+    <textarea class="text_entry" placeholder="There's nothing here yet..." readonly>
+      {{- decoded_message if decoded_message -}}
+    </textarea>
+  {% endif %}
+{% endblock %}

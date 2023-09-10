@@ -1,11 +1,11 @@
 import sys
 
-from . import cli_app, ui_app
+from . import cli_app, web
 
 
 def main():
     if sys.argv[1:] == []:
-        sys.exit(ui_app.run())
+        sys.exit(web.run_server())
     else:
         sys.exit(cli_app.run())
 

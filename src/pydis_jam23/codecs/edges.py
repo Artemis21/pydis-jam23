@@ -17,6 +17,7 @@ from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 from .common import CodecError, decode_varint, encode_varint
 
 short_name = "edges"
+display_name = "Edges"
 cli_flag = "--edges"
 cli_help = "use the edges codec"
 
