@@ -1,25 +1,59 @@
-"""Encode image and decode functions for the joke codec."""
-import math
+"""Encode and decode functions for the "not" codec.
+
+Unlike the regular LSB encoding which encodes a message within a file,
+this non-serious approach takes the *image* and encodes it in another
+image containing text of your secret message. In short, it does the opposite
+of the standard LSB codec.
+"""
 import textwrap
 from io import BytesIO
+from math import ceil, floor
+from typing import Any
 
 from PIL import Image, ImageDraw, ImageFont
 
 from . import lsb
-from .common import ASSETS
+from .common import ASSETS, CodecParam
 
+short_name = "not"
+display_name = "Not"
 cli_flag = "--not"
-cli_help = "use the not codec"
+cli_help = "encode a file within a render of your secret message (joke encoding)"
 
 
-def encode(image: Image.Image, message: bytes) -> None:
-    """Encode an image into a message using our joke encoding."""
+params = [
+    CodecParam(
+        name="bits",
+        type_=int,
+        default=1,
+        required=False,
+        display_name="Bits",
+        help_="number of bits to store per pixel",
+        cli_flag="bits",
+    ),
+    CodecParam(
+        name="msb",
+        type_=bool,
+        default=False,
+        required=False,
+        display_name="MSB",
+        help_="use the most significant bits instead",
+        cli_flag="msb",
+    ),
+]
+encode_params = []
+decode_params = []
+
+
+def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
+    """Encode an image into a message using our "not" encoding."""
     # target bytes (msg_image must be big enough)
     num_bytes = len(bytearray(image.tobytes()))
 
     # num_bytes / 3 for the 3 (RGB) channels in msg_image
-    num_pixels = max(math.ceil(num_bytes / 3), 1024 * 768 * 3)  # at least (1024, 768) pixels
+    num_pixels = max(ceil(num_bytes / 3), 1024 * 768 * 3)  # at least (1024, 768) pixels
 
+    # arbitrary 4:3 ratio
     width = int((num_pixels * 4 / 3) ** 0.5)
     height = int((num_pixels * 3 / 4) ** 0.5)
 
@@ -34,7 +68,7 @@ def encode(image: Image.Image, message: bytes) -> None:
 
     # wrap text
     avg_char_width = sum(font.font.getsize(char)[0][0] for char in set(message)) / len(set(message))
-    max_char_count = math.floor((msg_image.size[0] * 0.95) / avg_char_width)
+    max_char_count = floor((msg_image.size[0] * 0.95) / avg_char_width)
     text = textwrap.fill(text=message, width=max_char_count)
 
     # draw text
@@ -44,7 +78,7 @@ def encode(image: Image.Image, message: bytes) -> None:
     image.save(image_io, format=image.format)
     image_bytes = image_io.getvalue()
 
-    lsb.encode(msg_image, image_bytes)
+    lsb.encode(msg_image, image_bytes, **codec_args)
 
 
 decode = lsb.decode
