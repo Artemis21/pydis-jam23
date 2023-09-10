@@ -11,6 +11,7 @@ from hashlib import sha256
 from .common import CodecError, CodecParam, decode_varint, encode_varint
 
 short_name = "ssdb"
+display_name = "SSDB"
 cli_flag = "--ssdb"
 cli_help = "use the seed spaced data bytes codec"
 
@@ -19,8 +20,10 @@ params = [
         name="password",
         type_=str,
         default=None,
+        required=False,
+        display_name="Password",
+        help="The password used to encode/decode.",
         cli_flag="pwd",
-        cli_help="The password used to encode/decode.",
     ),
 ]
 encode_params = []
