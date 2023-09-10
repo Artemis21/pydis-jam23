@@ -1,7 +1,7 @@
-"""Encode and decode functions for the seed spaced data bytes codec
+"""Encode and decode functions for the seed-spaced data bytes codec
 
-It works by spacing the message appart by random distances generated from
-the enterd password"""
+It works by spacing the message apart by random distances generated from
+the entered password"""
 from hashlib import sha256
 from random import randint, seed
 from typing import Any
@@ -13,7 +13,7 @@ from .common import CodecError, CodecParam, decode_varint, encode_varint
 short_name = "ssdb"
 display_name = "SSDB"
 cli_flag = "--ssdb"
-cli_help = "use the seed spaced data bytes codec"
+cli_help = "use the seed-spaced data bytes codec"
 
 params = [
     CodecParam(
@@ -31,7 +31,7 @@ decode_params = []
 
 
 def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image:
-    """Encode data by the format described above"""
+    """Encode data by the format described above."""
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
     password = validate_args(**codec_args)
@@ -39,7 +39,7 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image
 
     if (
         len(image_data) // 2 < len(data) * 8
-    ):  # //2 to enusre that there doesnt have to be one pixel picked randomly out all
+    ):  # // 2 to ensure that there doesn't have to be one pixel picked randomly out all
         msg = "Data is to long to be encoded cleanly into this image."
         raise CodecError(msg)
 
@@ -48,7 +48,7 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image
     byte_gen = byte_generator(image_data, seed_hash)
 
     for bit in bit_stream:
-        # write data into imagestream
+        # write data into image stream
         location, byte = next(byte_gen)
         image_data[location] = set_lsb(byte, bit)
 
@@ -56,9 +56,9 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image
 
 
 def decode(image: Image.Image, **codec_args: Any) -> bytes:
-    """Decode data by the format described above
+    """Decode data by the format described above.
 
-    As it just reads out the data there is no check that the data is correct"""
+    As it just reads out the data there is no check that the data is correct."""
     image_data = bytearray(image.tobytes())
     password = validate_args(**codec_args)
     seed_hash = generate_seed(password)  # hash the password
@@ -93,9 +93,9 @@ MAX_REPEATS = 100
 
 
 def byte_generator(image_data: bytearray, seed_hash: str) -> tuple[int, bytes]:
-    """Generator for the location and the value of bytes in the image
+    """Generator for the location and the value of bytes in the image.
 
-    It enusres that each pixel is only written to once"""
+    It ensures that each pixel is only written to once."""
 
     seed(seed_hash)  # set seed to enusre the same randum numbers
     max_step = len(image_data) - 1
@@ -103,7 +103,7 @@ def byte_generator(image_data: bytearray, seed_hash: str) -> tuple[int, bytes]:
     repeat = 0
     while True:
         random_number = randint(0, max_step)  # noqa: S311
-        # in theory you would need cryto but i did not find a lib with correct tools
+        # in theory you would need crypto but i did not find a lib with the correct tools
         if random_number not in previous:
             previous.append(random_number)
             cursor = random_number
@@ -112,10 +112,10 @@ def byte_generator(image_data: bytearray, seed_hash: str) -> tuple[int, bytes]:
         else:
             repeat += 1
             if repeat > MAX_REPEATS:
-                msg = """To many repeat byte indices.
-                This codec uses randomness, but has choosen already picked to indices more then {MAX_REPEATS}
+                msg = """Too many repeat byte indices.
+                This codec uses randomness but has chosen already picked to indices more than {MAX_REPEATS}.
                 This either means that the data is to big in comparison to the image or that
-                you password is unlucy :("""
+                you password is unlucky. :("""
                 raise CodecError(msg)
 
 
@@ -132,7 +132,7 @@ def validate_args(**kwargs: Any) -> str:
 
 
 def get_bits(data: bytes) -> list[int]:
-    """Converst bynary data into a list of 0 | 1"""
+    """Converts binary data into a list of 0 | 1"""
     data_binary = []
     for byte in data:
         for bit_idx in range(8):
@@ -141,7 +141,7 @@ def get_bits(data: bytes) -> list[int]:
 
 
 def generate_seed(password: str) -> str:
-    """Hashes the password to generate the seed"""
+    """Hashes the password to generate the seed."""
 
     hasher = sha256()
     hasher.update(password.encode("UTF-8"))
