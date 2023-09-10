@@ -29,7 +29,7 @@ encode_params = lsb.encode_params
 decode_params = lsb.decode_params
 
 
-def encode(message: bytes, **codec_args: Any) -> None:
+def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
     """Encode an image into a message using our noise encoding."""
     # target bytes (noise_image must be big enough)
     num_bytes = len(message)
