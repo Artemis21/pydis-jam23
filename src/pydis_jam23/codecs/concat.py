@@ -1,8 +1,19 @@
+"""Appends Data to image to display text secret on text display
+
+Concat codec appends data to image using a custom encoding, which consists
+of the XOR operator and bit-shift operator, and uses it as a storing format.
+When data is retrieved/decoded then the secret code will be displayed on the
+image like a scratch code thing but digital.
+You could also add your own charset When decoding your message, if you dont
+all the chars needed the message secret might not be clear enough to read.
+"""
+
 import string
+from typing import Any
 
 from PIL import Image, ImageDraw
 
-from .common import CodecError
+from .common import CodecError, CodecParam
 
 short_name = "concat"
 display_name = "Concat"
@@ -11,7 +22,17 @@ cli_help = "appends encoded secret into the image"
 
 params = []
 encode_params = []
-decode_params = []
+decode_params = [
+    CodecParam(
+        name="charset",
+        type_=str,
+        default=1,
+        required=False,
+        display_name="Charset",
+        help_="uses a custom charset to decode image",
+        cli_flag="chars",
+    ),
+]
 
 
 buf_size = 2**8  # see which buffer size gives the faster time
@@ -63,7 +84,9 @@ def encode(image: Image.Image, secret: bytes, shift_level: BitShift = BitShift._
     image.putdata(DataSect.start + enc_msg.encode() + DataSect.end)
 
 
-def decode(image: Image.Image, shift_level: BitShift = BitShift._min):
+def decode(image: Image.Image, shift_level: BitShift = BitShift._min, **kwargs: Any):
+    charset = kwargs.get("charset") if isinstance(kwargs.get("charset"), str) else None
+    charset = charset.encode() if charset is not None else None
     image_data = image.tobytes()
     _data = []
     for i in list(image_data):
@@ -71,6 +94,6 @@ def decode(image: Image.Image, shift_level: BitShift = BitShift._min):
             _data.append(i)
     secret = bytearray(_data)
     secret = secret[secret.find(DataSect.start) + len(DataSect.start) : secret.find(DataSect.end)].decode()
-    dec_msg = bit_shift_decoding(secret, shift=shift_level)
+    dec_msg = bit_shift_decoding(secret, shift=shift_level, charset=charset)
     write_text_on_image(image, dec_msg)
     return dec_msg.encode()
