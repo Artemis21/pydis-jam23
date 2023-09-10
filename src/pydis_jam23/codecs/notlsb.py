@@ -62,4 +62,5 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image
     return lsb.encode(msg_image, image_bytes, **codec_args)
 
 
-decode = lsb.decode
+def decode(image: Image.Image, **codec_args: Any) -> bytes:  # noqa: ARG001
+    return b"haha nice try"
