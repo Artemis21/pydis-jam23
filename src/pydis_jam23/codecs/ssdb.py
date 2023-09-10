@@ -102,7 +102,7 @@ def byte_generator(image_data: bytearray, seed_hash: str) -> tuple[int, bytes]:
     previous = []
     repeat = 0
     while True:
-        random_number = randint(0, max_step) # noqa: S311 
+        random_number = randint(0, max_step)  # noqa: S311
         # in theory you would need cryto but i did not find a lib with correct tools
         if random_number not in previous:
             previous.append(random_number)
