@@ -1,5 +1,4 @@
-"""Encode image and decode functions for the joke codec.
-"""
+"""Encode image and decode functions for the joke codec."""
 import math
 import textwrap
 from io import BytesIO
@@ -7,6 +6,7 @@ from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
 from . import lsb
+from .common import ASSETS
 
 cli_flag = "--not"
 cli_help = "use the not codec"
@@ -29,7 +29,7 @@ def encode(image: Image.Image, message: bytes) -> None:
 
     # setup draw
     msg_image = Image.new(mode="RGB", size=(width, height), color="white")
-    font = ImageFont.truetype(font="../assests/font.ttf", size=font_size)
+    font = ImageFont.truetype(font=str(ASSETS / "font.ttf"), size=font_size)
     draw = ImageDraw.Draw(im=msg_image)
 
     # wrap text
