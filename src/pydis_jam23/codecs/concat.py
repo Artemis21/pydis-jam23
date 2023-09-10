@@ -7,10 +7,7 @@ image like a scratch code thing but digital.
 """
 
 import string
-from typing import Any
-
 from PIL import Image, ImageDraw
-
 from .common import CodecError
 
 short_name = "concat"
