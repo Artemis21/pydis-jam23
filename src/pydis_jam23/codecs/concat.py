@@ -1,5 +1,4 @@
 import string
-import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -44,11 +43,11 @@ def get_from_image(pathtoimage):
             sector = buf_to_read - (buf_size * buf_sect) if buf_to_read > (buf_size * buf_sect) else 0
 
             image_file.seek(sector, SeekMode._set)
-            try:
-                data = image_file.read(buf_size)
-            except OverflowError:
-                print(f'"{buf_size}" Buffer is to big')
-                sys.exit()
+            if buf_size > buf_to_read:
+                msg = f"{buf_size} buffer is to big"
+                raise OverflowError(msg)
+
+            data = image_file.read(buf_size)
 
             try:
                 if DataSect.start[key] in data and _continue is True:
