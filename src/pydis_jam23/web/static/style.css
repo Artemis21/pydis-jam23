@@ -129,10 +129,11 @@ body {
 
 .param {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
 }
 
-.param__input[type="text"] {
+.param__input[type="text"], .param__input[type="number"] {
   border: 0;
   color: #000;
   background: #fff;
