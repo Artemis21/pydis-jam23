@@ -40,11 +40,12 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
         msg = "Data is to long to be encoded into this image."
         raise CodecError(msg)
 
-    bit_stream = get_bits(data)
+    bit_stream = get_bits(data) # split bytes to bit
 
     byte_gen = byte_generator(image_data,seed_hash)
 
     for bit in bit_stream:
+        # write data into imagestream
         location, byte = next(byte_gen)
         image_data[location] = set_lsb(byte,bit)
     
@@ -63,9 +64,11 @@ def decode(image: Image.Image, **codec_args: Any) -> bytes:
         nonlocal byte_gen
         output_byte = []
         for _ in range(8):
+            # assemble each byte
             _,byte = next(byte_gen)
             output_byte.append(byte & 1)
 
+        # convert to bits to byte
         output = 0
         for i, bit_value in enumerate(output_byte):
             output += bit_value << i
@@ -73,6 +76,7 @@ def decode(image: Image.Image, **codec_args: Any) -> bytes:
 
     length = decode_varint(read_next_byte)
 
+    # assemble message
     message = b""
     for _ in range(length):
         message += read_next_byte().to_bytes(1,"big")
@@ -80,7 +84,11 @@ def decode(image: Image.Image, **codec_args: Any) -> bytes:
     return message
 
 def byte_generator(image_data:bytearray,seed_hash:str)->tuple[int,bytes]:
-    seed(seed_hash)
+    """ Generator for the location and the value of bytes in the image
+    
+    It enusres that each pixel is only written to once"""
+
+    seed(seed_hash) # set seed to enusre the same randum numbers
     max_step = len(image_data) - 1
     previous = []
     while True:
