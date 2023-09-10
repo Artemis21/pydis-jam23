@@ -2,7 +2,7 @@ import string
 
 from PIL import Image, ImageDraw
 
-from . import CodecError
+from .common import CodecError
 
 short_name = "concat"
 display_name = "Concat"
