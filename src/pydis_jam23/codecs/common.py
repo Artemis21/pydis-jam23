@@ -1,13 +1,25 @@
 import pathlib
 from collections.abc import Callable
+from dataclasses import dataclass
 
 
 class CodecError(Exception):
     """An error encountered while trying to perform message encoding/decoding."""
 
 
-ASSETS = pathlib.Path(__file__).parent.parent / "assets"
+@dataclass
+class CodecParam:
+    name: str
+    type_: type[bool] | type[int] | type[str]
+    default: bool | int | str | None
+    required: bool
 
+    display_name: str
+    help_: str
+    cli_flag: str
+
+
+ASSETS = pathlib.Path(__file__).parent.parent / "assets"
 SEVEN_BIT_MAX = 127
 
 

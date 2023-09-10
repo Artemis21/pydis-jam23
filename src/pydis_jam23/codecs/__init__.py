@@ -1,22 +1,29 @@
-from typing import Protocol
+from typing import Any, Protocol
 
 from PIL import Image
 
-from . import edges, lsb, noise, notlsb
-from .common import CodecError
+from . import edges, lsb, noise, notlsb, ssdb
+from .common import CodecError, CodecParam
 
 
 class Codec(Protocol):
+    short_name: str
+    display_name: str
+
     cli_flag: str
     cli_help: str
 
-    def encode(self, image: Image.Image, message: bytes) -> None:
+    params: list[CodecParam]
+    encode_params: list[CodecParam]
+    decode_params: list[CodecParam]
+
+    def encode(self, image: Image.Image, message: bytes, **encode_args: Any) -> None:
         ...
 
-    def decode(self, image: Image.Image) -> bytes:
+    def decode(self, image: Image.Image, **decode_args: Any) -> bytes:
         ...
 
 
-CODECS: list[Codec] = [edges, lsb, noise, notlsb]
+CODECS: list[Codec] = [lsb, edges, noise, notlsb, ssdb]
 
 __all__ = ["CodecError", "CODECS", "Codec"]
