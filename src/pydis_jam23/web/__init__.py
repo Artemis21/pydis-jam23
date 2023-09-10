@@ -17,7 +17,7 @@ current_image: Image.Image | None = None
 
 def run_server():
     webbrowser.open("http://localhost:5000", new=2)
-    app.run(debug=True)
+    app.run()
 
 
 @app.route("/")

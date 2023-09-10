@@ -38,7 +38,7 @@ def encode(image: Image.Image, message: bytes, *, test_channel: int | None = Non
     data = encode_varint(len(message)) + message
 
     if image.mode not in ALLOWED_MODES.keys():
-        msg = f"Image is in a wrong color mode. ({image.mode}) use one of these instead: {ALLOWED_MODES}."
+        msg = f"Image is in a wrong color mode. ({image.mode}) use one of these instead: {list(ALLOWED_MODES.keys())}."
         raise CodecError(msg)
 
     num_channels = ALLOWED_MODES[image.mode]
