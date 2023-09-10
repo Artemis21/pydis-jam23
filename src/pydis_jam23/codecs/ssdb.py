@@ -30,7 +30,7 @@ encode_params = []
 decode_params = []
 
 
-def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
+def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image:
     """Encode data by the format described above"""
     image_data = bytearray(image.tobytes())
     data = encode_varint(len(message)) + message
@@ -52,7 +52,7 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
         location, byte = next(byte_gen)
         image_data[location] = set_lsb(byte, bit)
 
-    image.frombytes(image_data)
+    return Image.frombytes(image.mode, image.size, image_data)
 
 
 def decode(image: Image.Image, **codec_args: Any) -> bytes:

@@ -28,7 +28,7 @@ decode_params = []
 ALLOWED_MODES = {"RGB": 3, "RGBA": 3, "CMYK": 4, "YCbCr": 4, "HSV": 3}
 
 
-def encode(image: Image.Image, message: bytes, *, test_channel: int | None = None, **codec_args: Any) -> None:
+def encode(image: Image.Image, message: bytes, *, test_channel: int | None = None, **codec_args: Any) -> Image.Image:
     """encode a message into an image using the above described method"""
     if codec_args:
         msg = f"Unexpected codec arguments: {codec_args}"
@@ -81,7 +81,7 @@ def encode(image: Image.Image, message: bytes, *, test_channel: int | None = Non
     for bit_idx, pixel_idx in enumerate(data_indices):
         image_data[pixel_idx] = set_lsb(image_data[pixel_idx], message_binary[bit_idx])
 
-    image.frombytes(image_data)
+    return Image.frombytes(image.mode, image.size, image_data)
 
 
 def decode(image: Image.Image, **codec_args: Any) -> bytes:

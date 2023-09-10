@@ -1,3 +1,4 @@
+import pathlib
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -18,6 +19,7 @@ class CodecParam:
     cli_flag: str
 
 
+ASSETS = pathlib.Path(__file__).parent.parent / "assets"
 SEVEN_BIT_MAX = 127
 
 

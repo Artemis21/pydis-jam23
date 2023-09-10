@@ -2,7 +2,7 @@ from typing import Any, Protocol
 
 from PIL import Image
 
-from . import edges, lsb, ssdb
+from . import edges, lsb, noise, notlsb, ssdb
 from .common import CodecError, CodecParam
 
 
@@ -17,13 +17,13 @@ class Codec(Protocol):
     encode_params: list[CodecParam]
     decode_params: list[CodecParam]
 
-    def encode(self, image: Image.Image, message: bytes, **encode_args: Any) -> None:
+    def encode(self, image: Image.Image, message: bytes, **encode_args: Any) -> Image.Image:
         ...
 
     def decode(self, image: Image.Image, **decode_args: Any) -> bytes:
         ...
 
 
-CODECS: list[Codec] = [lsb, edges, ssdb]
+CODECS: list[Codec] = [lsb, edges, noise, notlsb, ssdb]
 
 __all__ = ["CodecError", "CODECS", "Codec"]
