@@ -14,6 +14,7 @@ from PIL import Image
 from .common import CodecError, CodecParam, decode_varint, encode_varint
 
 short_name = "lsb"
+display_name = "LSB"
 cli_flag = "--lsb"
 cli_help = "use the least significant bits codec"
 
@@ -22,10 +23,18 @@ params = [
         name="bits",
         type_=int,
         default=1,
+        display_name="Bits",
+        help_="number of bits to store per pixel",
         cli_flag="bits",
-        cli_help="number of bits to store per pixel",
     ),
-    CodecParam(name="msb", type_=bool, default=False, cli_flag="msb", cli_help="use the most significant bits instead"),
+    CodecParam(
+        name="msb",
+        type_=bool,
+        default=False,
+        display_name="MSB",
+        help_="use the most significant bits instead",
+        cli_flag="msb",
+    ),
 ]
 encode_params = []
 decode_params = []

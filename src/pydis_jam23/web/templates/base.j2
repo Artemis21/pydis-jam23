@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Stego Suite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="/static/logo.png" />
+    <link href="/static/style.css" rel="stylesheet" />
+    <script src="/static/app.js"></script>
+  </head>
+  <body>
+    <div class="ribbon bubble">
+      <img class="ribbon__logo" src="/static/logo.png" />
+      <span class="ribbon__title">Stego Suite</span>
+      <div class="ribbon__sep"></div>
+      <label class="ribbon__item button" for="fileInput">Open</label>
+      <input class="hidden_input" id="fileInput" type="file" accept="image/**" />
+      {% if current_image %}
+        <a class="ribbon__item button" href="/current_image" download="encoded.png">Save as</a>
+      {% endif %}
+      <a class="ribbon__item button" href="https://github.com/Artemis21/pydis-jam23/wiki" target="_blank">Help</a>
+    </div>
+    <div class="toolbar bubble">
+      <div class="breadcrumbs">
+        <a class="breadcrumbs__crumb" href="/">Home</a>
+        <span class="breadcrumbs__sep">/</span>
+        {% block breadcrumbs %}{% endblock %}
+      </div>
+      {% block toolbar %}{% endblock %}
+    </div>
+    <div class="workspace bubble">
+      {% if current_image %}
+        <img class="workspace__image" src="/current_image" />
+      {% else %}
+        <span class="workspace__placeholder">Open an image to get started!</span>
+      {% endif %}
+    </div>
+    <div class="messages">
+      {% for message in get_flashed_messages() %}
+        <div class="message">{{ message }}</div>
+      {% endfor %}
+    </div>
+  </body>
+</html>

@@ -12,8 +12,9 @@ class CodecParam:
     type_: type[bool] | type[int] | type[str]
     default: bool | int | str
 
+    display_name: str
+    help_: str
     cli_flag: str
-    cli_help: str
 
 
 SEVEN_BIT_MAX = 127

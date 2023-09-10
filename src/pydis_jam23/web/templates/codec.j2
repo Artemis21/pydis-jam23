@@ -1,0 +1,12 @@
+{% extends "base.j2" %}
+
+{% block breadcrumbs %}
+  <span class="breadcrumbs__end">{{ codec.display_name }}</span>
+{% endblock %}
+
+{% block toolbar %}
+  <div class="toolbar__buttons">
+    <a href="/encode/{{ codec.short_name }}" class="button">Hide a message</a>
+    <a href="/decode/{{ codec.short_name }}" class="button">Extract a message</a>
+  </div>
+{% endblock %}

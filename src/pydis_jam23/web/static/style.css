@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+  display: grid;
+  grid-template-areas:
+    "ribbon  ribbon"
+    "toolbar workspace";
+  grid-template-rows: min-content 1fr;
+  grid-template-columns: 1fr 4fr;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  font-family: Roboto, sans-serif;
+}
+
+.bubble {
+  background: #e8e8e8;
+  border-radius: 2rem;
+}
+
+.ribbon {
+  grid-area: ribbon;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 2rem;
+}
+
+.ribbon__logo {
+  height: 3rem;
+  border-radius: 0.5rem;
+}
+
+.ribbon__title {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.ribbon__sep {
+  flex-grow: 999;
+}
+
+.hidden_input {
+  display: none;
+}
+
+.button {
+  background: #00f3;
+  color: #008;
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  font-family: inherit;
+  font-size: inherit;
+  transition: background 50ms linear;
+}
+
+.button:hover {
+  background: #00f6;
+}
+
+.button--disabled {
+  background: #ddd;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.button.button--disabled:hover {
+  background: #ddd;
+}
+
+.toolbar {
+  grid-area: toolbar;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.breadcrumbs__sep {
+  color: #777;
+}
+
+.breadcrumbs__crumb {
+  text-decoration: none;
+  color: #00f;
+  transition: color 50ms linear;
+}
+
+.breadcrumbs__crumb:hover {
+  color: #00a;
+}
+
+.breadcrumbs__end {
+  font-weight: bold;
+}
+
+.toolbar__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.toolbar__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.text_entry {
+  border: 0;
+  color: #000;
+  background: #fff;
+  resize: none;
+  height: 10rem;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+.text_entry:read-only {
+  background: #ddd;
+  outline: none;
+}
+
+.param {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.param__input[type="text"] {
+  border: 0;
+  color: #000;
+  background: #fff;
+  padding: 0.5rem;
+  border-radius: 1rem;
+}
+
+.workspace {
+  grid-area: workspace;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workspace__image {
+  max-width: 100%;
+  /* The ribbon and various padding takes up 11rem.
+     This is probably not the best way of doing this. */
+  max-height: calc(100vh - 11rem);
+}
+
+.messages {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+}
+
+.message {
+  background: #faa;
+  color: #644;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+}

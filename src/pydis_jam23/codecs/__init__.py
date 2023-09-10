@@ -8,6 +8,7 @@ from .common import CodecError, CodecParam
 
 class Codec(Protocol):
     short_name: str
+    display_name: str
 
     cli_flag: str
     cli_help: str
