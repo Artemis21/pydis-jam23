@@ -15,8 +15,8 @@ from .common import wikimedia_image  # noqa: F401 - import for fixtures
 )
 @pytest.mark.parametrize("mask_color", [0, 1, 2])
 def test_message_roundtrip(wikimedia_image: Image.Image, message: bytes, mask_color: int) -> None:
-    edges.encode(wikimedia_image, message, test_channel=mask_color)
-    assert edges.decode(wikimedia_image) == message
+    encoded = edges.encode(wikimedia_image, message, test_channel=mask_color)
+    assert edges.decode(encoded) == message
 
 
 def test_message_too_long(wikimedia_image: Image.Image) -> None:

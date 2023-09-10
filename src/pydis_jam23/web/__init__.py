@@ -17,7 +17,7 @@ current_image: Image.Image | None = None
 
 def run_server():
     webbrowser.open("http://localhost:5000", new=2)
-    app.run(debug=True)
+    app.run()
 
 
 @app.route("/")
@@ -37,6 +37,7 @@ def get_encode(codec: str):
 
 @app.route("/encode/<codec>", methods=["POST"])
 def post_encode(codec: str):
+    global current_image  # noqa: PLW0603 - global mutable
     if current_image is None:
         msg = "No image loaded"
         raise ValueError(msg)
@@ -44,7 +45,8 @@ def post_encode(codec: str):
     message = request.form["message"].encode("utf-8")
     extra_args = get_args(codec_obj.params + codec_obj.encode_params)
     try:
-        codec_obj.encode(current_image, message, **extra_args)
+        current_image = codec_obj.encode(current_image, message, **extra_args)
+        print(current_image)
     except CodecError as e:
         flash(f"Encoding failed: {e}")
     return render("action.j2", codec=codec_obj, encode=True)
