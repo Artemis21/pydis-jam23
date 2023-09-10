@@ -36,8 +36,8 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
     password = validate_args(**codec_args)
     seed_hash = generate_seed(password) # hash the password
 
-    if len(image_data) < len(data)*8:
-        msg = "Data is to long to be encoded into this image."
+    if len(image_data)//2 < len(data)*8:
+        msg = "Data is to long to be encoded cleanly into this image."
         raise CodecError(msg)
 
     bit_stream = get_bits(data) # split bytes to bit
@@ -83,6 +83,8 @@ def decode(image: Image.Image, **codec_args: Any) -> bytes:
 
     return message
 
+MAX_REPEATS = 100
+
 def byte_generator(image_data:bytearray,seed_hash:str)->tuple[int,bytes]:
     """ Generator for the location and the value of bytes in the image
     
@@ -91,12 +93,21 @@ def byte_generator(image_data:bytearray,seed_hash:str)->tuple[int,bytes]:
     seed(seed_hash) # set seed to enusre the same randum numbers
     max_step = len(image_data) - 1
     previous = []
+    repeat = 0
     while True:
         random_number = randint(0,max_step)
         if random_number not in previous:
             previous.append(random_number)
             cursor = random_number
+            repeat = 0
             yield cursor, image_data[cursor]
+        else:
+            repeat += 1
+            if repeat > MAX_REPEATS:
+                msg = """To many repeat byte indices.
+                This codec uses randomness, but has choosen already picked to indices more then {MAX_REPEATS}
+                This either means that the data is to big in comparison to the image or that you password is unlucy :("""
+                raise CodecError(msg)
 
 def validate_args(**kwargs: Any)->str:
     """Validate the arguments passed to the codec."""
