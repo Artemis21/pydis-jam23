@@ -36,7 +36,7 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
     password = validate_args(**codec_args)
     seed_hash = generate_seed(password) # hash the password
 
-    if len(image_data)//2 < len(data)*8:
+    if len(image_data)//2 < len(data)*8: # //2 to enusre that there doesnt have to be one pixel picked randomly out all
         msg = "Data is to long to be encoded cleanly into this image."
         raise CodecError(msg)
 
