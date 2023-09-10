@@ -5,7 +5,7 @@ from typing import Any
 from flask import Flask, flash, render_template, request, send_file
 from PIL import Image
 
-from pydis_jam23.codecs import CODECS, Codec, CodecError, CodecParam
+from src.pydis_jam23.codecs import CODECS, Codec, CodecError, CodecParam
 
 app = Flask(__name__)
 app.secret_key = "secret"  # We're only running locally.
