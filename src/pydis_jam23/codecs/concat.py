@@ -67,6 +67,7 @@ def encode(image: Image.Image, secret: bytes, shift_level: BitShift = BitShift._
         return
     enc_msg = bit_shift_encoding(secret, shift=shift_level)
     image.putdata(DataSect.start + enc_msg.encode() + DataSect.end)
+    return image
 
 
 def decode(image: Image.Image, shift_level: BitShift = BitShift._min):
