@@ -1,8 +1,21 @@
 from collections.abc import Callable
+from dataclasses import dataclass
 
 
 class CodecError(Exception):
     """An error encountered while trying to perform message encoding/decoding."""
+
+
+@dataclass
+class CodecParam:
+    name: str
+    type_: type[bool] | type[int] | type[str]
+    default: bool | int | str | None
+    required: bool
+
+    display_name: str
+    help_: str
+    cli_flag: str
 
 
 SEVEN_BIT_MAX = 127
