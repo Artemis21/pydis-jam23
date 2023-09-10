@@ -13,7 +13,7 @@ from typing import Any
 from PIL import Image, ImageDraw, ImageFont
 
 from . import lsb
-from .common import ASSETS, CodecParam
+from .common import ASSETS
 
 short_name = "not"
 display_name = "Not"
@@ -21,28 +21,9 @@ cli_flag = "--not"
 cli_help = "encode a file within a render of your secret message (joke encoding)"
 
 
-params = [
-    CodecParam(
-        name="bits",
-        type_=int,
-        default=1,
-        required=False,
-        display_name="Bits",
-        help_="number of bits to store per pixel",
-        cli_flag="bits",
-    ),
-    CodecParam(
-        name="msb",
-        type_=bool,
-        default=False,
-        required=False,
-        display_name="MSB",
-        help_="use the most significant bits instead",
-        cli_flag="msb",
-    ),
-]
-encode_params = []
-decode_params = []
+params = lsb.params
+encode_params = lsb.encode_params
+decode_params = lsb.decode_params
 
 
 def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:

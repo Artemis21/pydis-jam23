@@ -17,7 +17,6 @@ from numpy import random, uint8
 from PIL import Image
 
 from . import lsb
-from .common import CodecParam
 
 short_name = "noise"
 display_name = "Noise"
@@ -25,28 +24,9 @@ cli_flag = "--noise"
 cli_help = "encode your message inside random noise"
 
 
-params = [
-    CodecParam(
-        name="bits",
-        type_=int,
-        default=1,
-        required=False,
-        display_name="Bits",
-        help_="number of bits to store per pixel",
-        cli_flag="bits",
-    ),
-    CodecParam(
-        name="msb",
-        type_=bool,
-        default=False,
-        required=False,
-        display_name="MSB",
-        help_="use the most significant bits instead",
-        cli_flag="msb",
-    ),
-]
-encode_params = []
-decode_params = []
+params = lsb.params
+encode_params = lsb.encode_params
+decode_params = lsb.decode_params
 
 
 def encode(message: bytes, **codec_args: Any) -> None:
