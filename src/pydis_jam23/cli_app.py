@@ -99,7 +99,7 @@ def codec_arg_qualname(codec: Codec, param: CodecParam) -> str:
 def encode_message(plain: typing.BinaryIO, codec: Codec, extra_args: dict[str, typing.Any]) -> None:
     message = sys.stdin.buffer.read()
     image = Image.open(plain)
-    codec.encode(image, message, **extra_args)
+    image = codec.encode(image, message, **extra_args)
     image.save(sys.stdout.buffer, format="PNG")
 
 

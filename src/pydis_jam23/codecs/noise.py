@@ -29,7 +29,7 @@ encode_params = lsb.encode_params
 decode_params = lsb.decode_params
 
 
-def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
+def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image:  # noqa: ARG001 - use our own image
     """Encode an image into a message using our noise encoding."""
     # target bytes (noise_image must be big enough)
     num_bytes = len(message)
@@ -45,7 +45,7 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
     noise_array = random.randint(0, 255, (height, width, 3), dtype=uint8)
     noise_image = Image.fromarray(noise_array, "RGB")
 
-    lsb.encode(noise_image, message, **codec_args)
+    return lsb.encode(noise_image, message, **codec_args)
 
 
 decode = lsb.decode

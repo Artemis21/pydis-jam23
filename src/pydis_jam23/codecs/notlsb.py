@@ -26,7 +26,7 @@ encode_params = lsb.encode_params
 decode_params = lsb.decode_params
 
 
-def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
+def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image:
     """Encode an image into a message using our "not" encoding."""
     # target bytes (msg_image must be big enough)
     num_bytes = len(bytearray(image.tobytes()))
@@ -59,7 +59,7 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
     image.save(image_io, format=image.format)
     image_bytes = image_io.getvalue()
 
-    lsb.encode(msg_image, image_bytes, **codec_args)
+    return lsb.encode(msg_image, image_bytes, **codec_args)
 
 
 decode = lsb.decode

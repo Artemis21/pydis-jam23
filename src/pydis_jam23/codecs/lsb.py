@@ -42,7 +42,7 @@ encode_params = []
 decode_params = []
 
 
-def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
+def encode(image: Image.Image, message: bytes, **codec_args: Any) -> Image.Image:
     """Encode a message into an image using our LSB encoding."""
     bits, msb = validate_args(**codec_args)
     if bits < 1 or bits > 8:
@@ -61,7 +61,7 @@ def encode(image: Image.Image, message: bytes, **codec_args: Any) -> None:
         pixel = data[pixel_idx] & mask  # clear the bit
         pixel |= data_bit << shift  # set the bit
         data[pixel_idx] = pixel
-    image.frombytes(data)
+    return Image.frombytes(image.mode, image.size, data)
 
 
 def decode(image: Image.Image, **codec_args: Any) -> bytes:
