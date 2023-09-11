@@ -1,19 +1,9 @@
 [![Python tests](https://github.com/Artemis21/pydis-jam23/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/Artemis21/pydis-jam23/actions/workflows/test.yaml)
 
-[//]: # (# TODO: add the badge for `coverage`)
+# Readable Regexes: Stego Suite
 
-# Readable Regexes
+![A screenshot of the app home page, showing a list of codecs to choose from alongside an image of the app logo](https://github.com/Artemis21/pydis-jam23/assets/57376638/bbf37666-b9e6-4701-bf1a-70f6e0a73ec5)
 
-Once we've worked out what our project is, this file should describe it. For now, here are some instructions on setting the project up.
+Stego Suite is a toolkit providing a variety of approaches to [steganography](https://en.wikipedia.org/wiki/Steganography), developed as part of [the Python Discord Code Jam, 2023](https://www.pythondiscord.com/events/code-jams/10/).
 
-## Installation
-
-This project uses [Hatch](https://hatch.pypa.io) for dependency management and virtual environments. Hatch can be installed with `pip install hatch` among [other methods](https://hatch.pypa.io/latest/install/).
-
-You'll also need to clone this repository locally, which you can do with `git clone https://github.com/Artemis21/pydis-jam23`. Finally, `cd` into the project directory and run `hatch run hooks` to install pre-commit linting hooks.
-
-Other commands you can run through hatch include:
-- `hatch run lint`: Run linting checks, which tell you when there are style issues in your code.
-- `hatch run fmt`: Run code formatting to automatically enforce style consistency.
-- `hatch run main`: Runs the project code itself.
-- `hatch run test`: Runs the tests in the `tests` directory.
+[The wiki](https://github.com/Artemis21/pydis-jam23/wiki) contains instructions for [installation and development](https://github.com/Artemis21/pydis-jam23/wiki/Installation), [an introductory guide](https://github.com/Artemis21/pydis-jam23/wiki/Guide) and information on [the available codecs](https://github.com/Artemis21/pydis-jam23/wiki/Codecs).
