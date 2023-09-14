@@ -6,6 +6,8 @@
 
 Stego Suite is a toolkit providing a variety of approaches to [steganography](https://en.wikipedia.org/wiki/Steganography), developed as part of [the Python Discord Code Jam, 2023](https://www.pythondiscord.com/events/code-jams/10/).
 
+Watch this [video](https://youtu.be/p08M0LqjWMI) to get an overview of the project.
+
 [The wiki](https://github.com/Artemis21/pydis-jam23/wiki) contains instructions for [installation and development](https://github.com/Artemis21/pydis-jam23/wiki/Installation), [an introductory guide](https://github.com/Artemis21/pydis-jam23/wiki/Guide) and information on [the available codecs](https://github.com/Artemis21/pydis-jam23/wiki/Codecs).
 
 ## Quick installation guide:
